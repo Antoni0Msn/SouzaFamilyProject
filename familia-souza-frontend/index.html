@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Família Souza — Entrar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <div class="login-overlay"></div>
+
+    <header class="login-header">
+      <a class="brand brand-large" href="index.html" aria-label="Família Souza">
+        <span>FAMÍLIA</span>
+        <strong>SOUZA</strong>
+      </a>
+    </header>
+
+    <section class="login-card" aria-labelledby="login-title">
+      <h1 id="login-title">Entrar</h1>
+      <p class="login-subtitle">Acesse sua conta.</p>
+
+      <form id="loginForm" class="login-form" novalidate>
+        <label class="field">
+          <span>E-mail</span>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" required />
+        </label>
+
+        <label class="field">
+          <span>Senha</span>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Sua senha" required minlength="4" />
+            <button id="togglePassword" class="ghost-icon" type="button" aria-label="Mostrar senha" title="Mostrar senha">◉</button>
+          </div>
+        </label>
+
+        <div id="loginError" class="form-message error" role="alert" hidden></div>
+
+        <button class="primary-button full" type="submit">Entrar</button>
+
+        <div class="login-options">
+          <label class="checkbox-label">
+            <input id="rememberMe" type="checkbox" />
+            <span>Lembrar de mim</span>
+          </label>
+          <a href="#" id="forgotPassword">Precisa de ajuda?</a>
+        </div>
+      </form>
+
+      <div class="login-footer-copy">
+        <p>Novo por aqui? <strong>A Família Souza tem espaço para você.</strong></p>
+        <small>O login real será conectado à sua API C# RESTful.</small>
+      </div>
+    </section>
+
+    <footer class="site-footer">Família Souza · Entre. Escolha. Assista.</footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
