@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WebApplication1.Configurations;
 using WebApplication1.Data;
 using WebApplication1.Models;
+using WebApplication1.Services;
+using WebApplication1.Services.External;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,15 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+// ---------------- Integrações externas (TMDB / Watchmode) ----------------
+builder.Services.Configure<TmdbOptions>(builder.Configuration.GetSection(TmdbOptions.SectionName));
+builder.Services.Configure<WatchmodeOptions>(builder.Configuration.GetSection(WatchmodeOptions.SectionName));
+builder.Services.Configure<SyncOptions>(builder.Configuration.GetSection(SyncOptions.SectionName));
+
+builder.Services.AddHttpClient<TmdbService>();
+builder.Services.AddHttpClient<WatchmodeService>();
+builder.Services.AddScoped<SyncService>();
 
 // ---------------- Porta dinâmica (Render/containers) ----------------
 // Render injeta a variável de ambiente PORT e espera que a aplicação escute nela.
