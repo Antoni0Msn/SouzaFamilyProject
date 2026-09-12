@@ -39,6 +39,24 @@ namespace WebApplication1.Services.External
             return response ?? new TmdbPagedResponse<TmdbTvDto>();
         }
 
+        /// <summary>Busca os metadados completos de um filme específico pelo ID do TMDB.</summary>
+        public async Task<TmdbMovieDto?> GetMovieDetailsAsync(int tmdbId, CancellationToken ct = default)
+        {
+            var url = $"movie/{tmdbId}?api_key={_options.ApiKey}&language={_options.Language}";
+            var response = await _httpClient.GetAsync(url, ct);
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<TmdbMovieDto>(cancellationToken: ct);
+        }
+
+        /// <summary>Busca os metadados completos de uma série específica pelo ID do TMDB.</summary>
+        public async Task<TmdbTvDto?> GetTvDetailsAsync(int tmdbId, CancellationToken ct = default)
+        {
+            var url = $"tv/{tmdbId}?api_key={_options.ApiKey}&language={_options.Language}";
+            var response = await _httpClient.GetAsync(url, ct);
+            if (!response.IsSuccessStatusCode) return null;
+            return await response.Content.ReadFromJsonAsync<TmdbTvDto>(cancellationToken: ct);
+        }
+
         /// <summary>Mapa TmdbGenreId -> Nome do gênero, para filmes.</summary>
         public async Task<Dictionary<int, string>> GetMovieGenreMapAsync(CancellationToken ct = default)
         {

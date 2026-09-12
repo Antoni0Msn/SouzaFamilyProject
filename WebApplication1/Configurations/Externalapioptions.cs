@@ -25,6 +25,14 @@
         /// Lista vazia = aceita qualquer streaming (sem filtro).
         /// </summary>
         public List<string> AllowedProviders { get; set; } = [];
+
+        /// <summary>
+        /// Os mesmos streamings de AllowedProviders, mas pelo source_id numérico do
+        /// Watchmode (ex: Netflix=203, Prime Video=26). Necessário pro endpoint
+        /// /list-titles, que filtra por ID e não por nome. Descubra os IDs usando
+        /// GET /api/sync/debug/sources num título que você sabe que está no serviço.
+        /// </summary>
+        public List<int> AllowedSourceIds { get; set; } = [];
     }
 
     public class SyncOptions

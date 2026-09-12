@@ -40,8 +40,19 @@ namespace WebApplication1.DTOs.External
         [JsonPropertyName("release_date")]
         public string? ReleaseDate { get; set; }
 
+        /// <summary>Formato do endpoint /movie/popular (lista de IDs).</summary>
         [JsonPropertyName("genre_ids")]
         public List<int> GenreIds { get; set; } = [];
+
+        /// <summary>Formato do endpoint /movie/{id} (lista de objetos completos).</summary>
+        [JsonPropertyName("genres")]
+        public List<TmdbGenreDto>? Genres { get; set; }
+
+        /// <summary>Usa qualquer um dos dois formatos que tiver vindo preenchido.</summary>
+        [JsonIgnore]
+        public List<int> ResolvedGenreIds => GenreIds.Count > 0
+            ? GenreIds
+            : Genres?.Select(g => g.Id).ToList() ?? [];
     }
 
     public class TmdbTvDto
@@ -67,8 +78,18 @@ namespace WebApplication1.DTOs.External
         [JsonPropertyName("first_air_date")]
         public string? FirstAirDate { get; set; }
 
+        /// <summary>Formato do endpoint /tv/popular (lista de IDs).</summary>
         [JsonPropertyName("genre_ids")]
         public List<int> GenreIds { get; set; } = [];
+
+        /// <summary>Formato do endpoint /tv/{id} (lista de objetos completos).</summary>
+        [JsonPropertyName("genres")]
+        public List<TmdbGenreDto>? Genres { get; set; }
+
+        [JsonIgnore]
+        public List<int> ResolvedGenreIds => GenreIds.Count > 0
+            ? GenreIds
+            : Genres?.Select(g => g.Id).ToList() ?? [];
     }
 
     public class TmdbGenreDto

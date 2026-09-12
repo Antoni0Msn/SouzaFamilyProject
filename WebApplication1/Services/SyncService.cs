@@ -37,10 +37,17 @@ namespace WebApplication1.Services
             _logger = logger;
         }
 
+        // =====================================================================
+        // FLUXO 1 (original): parte do TMDB "populares", filtra pelo Watchmode.
+        // Simples, mas desperdiça chamadas em títulos que não estão nos seus
+        // streamings. Bom para um sync incremental leve.
+        // =====================================================================
+
         public async Task<SyncLog> SyncMoviesAsync(int pages = 1, CancellationToken ct = default)
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Movies", StartedAt = DateTime.UtcNow };
             var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+            var errors = 0;
 
             try
             {
@@ -54,21 +61,29 @@ namespace WebApplication1.Services
                     {
                         log.RecordsProcessed++;
 
-                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(movie.Id, isMovie: true, ct: ct);
-                        foreach (var s in sources) seenProviders.Add(s.Name);
-
-                        var allowedSources = FilterAllowedSources(sources);
-
-                        if (allowedSources.Count == 0)
+                        try
                         {
-                            // Não está disponível em nenhum streaming que cobrimos - não salva no banco.
-                            continue;
+                            var details = await _watchmode.GetTitleDetailsWithSourcesAsync(movie.Id, isMovie: true, ct: ct);
+                            var sources = details?.Sources ?? [];
+                            foreach (var s in sources) seenProviders.Add(s.Name);
+
+                            var allowedSources = FilterAllowedSources(sources);
+                            if (allowedSources.Count == 0) continue; // não está nos streamings cobertos
+
+                            var (title, created) = await UpsertTitleFromMovieAsync(movie, genreMap, ct);
+                            title.WatchmodeId = details?.Id;
+                            title.ImdbId = details?.ImdbId;
+                            if (created) log.RecordsCreated++; else log.RecordsUpdated++;
+
+                            await UpsertProvidersAsync(title, allowedSources, ct);
                         }
-
-                        var (title, created) = await UpsertTitleFromMovieAsync(movie, genreMap, ct);
-                        if (created) log.RecordsCreated++; else log.RecordsUpdated++;
-
-                        await UpsertProvidersAsync(title, allowedSources, ct);
+                        catch (Exception itemEx)
+                        {
+                            // Um item com problema (rate limit, dado malformado etc.) não deve
+                            // derrubar a página inteira - loga e segue pro próximo.
+                            errors++;
+                            _logger.LogWarning(itemEx, "Falha ao processar o filme TMDB id={TmdbId}", movie.Id);
+                        }
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -76,7 +91,8 @@ namespace WebApplication1.Services
                     if (page >= popular.TotalPages) break;
                 }
 
-                log.Success = true;
+                log.Success = errors == 0;
+                if (errors > 0) log.ErrorMessage = $"{errors} item(ns) falharam durante o processamento (ver logs).";
             }
             catch (Exception ex)
             {
@@ -101,6 +117,7 @@ namespace WebApplication1.Services
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Series", StartedAt = DateTime.UtcNow };
             var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
+            var errors = 0;
 
             try
             {
@@ -114,21 +131,27 @@ namespace WebApplication1.Services
                     {
                         log.RecordsProcessed++;
 
-                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(tv.Id, isMovie: false, ct: ct);
-                        foreach (var s in sources) seenProviders.Add(s.Name);
-
-                        var allowedSources = FilterAllowedSources(sources);
-
-                        if (allowedSources.Count == 0)
+                        try
                         {
-                            // Não está disponível em nenhum streaming que cobrimos - não salva no banco.
-                            continue;
+                            var details = await _watchmode.GetTitleDetailsWithSourcesAsync(tv.Id, isMovie: false, ct: ct);
+                            var sources = details?.Sources ?? [];
+                            foreach (var s in sources) seenProviders.Add(s.Name);
+
+                            var allowedSources = FilterAllowedSources(sources);
+                            if (allowedSources.Count == 0) continue; // não está nos streamings cobertos
+
+                            var (title, created) = await UpsertTitleFromTvAsync(tv, genreMap, ct);
+                            title.WatchmodeId = details?.Id;
+                            title.ImdbId = details?.ImdbId;
+                            if (created) log.RecordsCreated++; else log.RecordsUpdated++;
+
+                            await UpsertProvidersAsync(title, allowedSources, ct);
                         }
-
-                        var (title, created) = await UpsertTitleFromTvAsync(tv, genreMap, ct);
-                        if (created) log.RecordsCreated++; else log.RecordsUpdated++;
-
-                        await UpsertProvidersAsync(title, allowedSources, ct);
+                        catch (Exception itemEx)
+                        {
+                            errors++;
+                            _logger.LogWarning(itemEx, "Falha ao processar a série TMDB id={TmdbId}", tv.Id);
+                        }
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -136,7 +159,8 @@ namespace WebApplication1.Services
                     if (page >= popular.TotalPages) break;
                 }
 
-                log.Success = true;
+                log.Success = errors == 0;
+                if (errors > 0) log.ErrorMessage = $"{errors} item(ns) falharam durante o processamento (ver logs).";
             }
             catch (Exception ex)
             {
@@ -155,6 +179,137 @@ namespace WebApplication1.Services
             }
 
             return log;
+        }
+
+        // =====================================================================
+        // FLUXO 2 (recomendado para volume): parte do catálogo do Watchmode já
+        // filtrado pelos seus streamings (AllowedSourceIds), depois busca os
+        // metadados completos no TMDB. Não desperdiça chamadas em títulos fora
+        // dos seus streamings, e cobre MUITO mais do catálogo real deles.
+        // =====================================================================
+
+        public async Task<SyncLog> SyncFromWatchmodeCatalogAsync(int maxPages = 10, int limitPerPage = 250, CancellationToken ct = default)
+        {
+            var log = new SyncLog { Source = "Watchmode+TMDB", SyncType = "Catalog", StartedAt = DateTime.UtcNow };
+            var errors = 0;
+
+            try
+            {
+                if (_watchmodeOptions.AllowedSourceIds.Count == 0)
+                {
+                    throw new InvalidOperationException(
+                        "Watchmode:AllowedSourceIds não está configurado. Descubra os source_id dos seus " +
+                        "streamings via GET /api/sync/debug/sources e configure a lista antes de rodar este sync.");
+                }
+
+                var movieGenreMap = await _tmdb.GetMovieGenreMapAsync(ct);
+                var tvGenreMap = await _tmdb.GetTvGenreMapAsync(ct);
+
+                for (var page = 1; page <= maxPages; page++)
+                {
+                    var list = await _watchmode.ListTitlesBySourcesAsync(
+                        _watchmodeOptions.AllowedSourceIds, page: page, limit: limitPerPage, ct: ct);
+
+                    if (list.Titles.Count == 0) break;
+
+                    foreach (var item in list.Titles)
+                    {
+                        log.RecordsProcessed++;
+
+                        if (item.TmdbId is null)
+                        {
+                            // Título sem correspondência no TMDB - não temos como buscar metadados dele.
+                            continue;
+                        }
+
+                        var isMovie = string.Equals(item.TmdbType, "movie", StringComparison.OrdinalIgnoreCase);
+
+                        try
+                        {
+                            var details = await _watchmode.GetTitleDetailsWithSourcesAsync(item.TmdbId.Value, isMovie, ct: ct);
+                            var allowedSources = FilterAllowedSources(details?.Sources ?? []);
+
+                            if (allowedSources.Count == 0)
+                            {
+                                // Segurança extra - teoricamente não deveria acontecer já que o
+                                // /list-titles já filtrou por source_ids, mas providers "via Amazon
+                                // Prime" etc podem ter nomes que não batem com AllowedProviders.
+                                continue;
+                            }
+
+                            Title title;
+                            bool created;
+
+                            if (isMovie)
+                            {
+                                var movieDto = await _tmdb.GetMovieDetailsAsync(item.TmdbId.Value, ct);
+                                if (movieDto is null) continue;
+                                (title, created) = await UpsertTitleFromMovieAsync(movieDto, movieGenreMap, ct);
+                            }
+                            else
+                            {
+                                var tvDto = await _tmdb.GetTvDetailsAsync(item.TmdbId.Value, ct);
+                                if (tvDto is null) continue;
+                                (title, created) = await UpsertTitleFromTvAsync(tvDto, tvGenreMap, ct);
+                            }
+
+                            title.WatchmodeId = details?.Id ?? item.Id;
+                            title.ImdbId = details?.ImdbId ?? item.ImdbId;
+                            if (created) log.RecordsCreated++; else log.RecordsUpdated++;
+
+                            await UpsertProvidersAsync(title, allowedSources, ct);
+                        }
+                        catch (Exception itemEx)
+                        {
+                            errors++;
+                            _logger.LogWarning(itemEx, "Falha ao processar título TMDB id={TmdbId} (Watchmode id={WatchmodeId})", item.TmdbId, item.Id);
+                        }
+                    }
+
+                    await _db.SaveChangesAsync(ct);
+
+                    if (page >= list.TotalPages) break;
+                }
+
+                log.Success = errors == 0;
+                if (errors > 0) log.ErrorMessage = $"{errors} item(ns) falharam durante o processamento (ver logs).";
+            }
+            catch (Exception ex)
+            {
+                log.Success = false;
+                log.ErrorMessage = ex.Message;
+                _logger.LogError(ex, "Falha ao sincronizar catálogo a partir do Watchmode");
+            }
+            finally
+            {
+                log.FinishedAt = DateTime.UtcNow;
+                _db.SyncLogs.Add(log);
+                await _db.SaveChangesAsync(ct);
+            }
+
+            return log;
+        }
+
+        // =====================================================================
+        // Helpers compartilhados pelos dois fluxos
+        // =====================================================================
+
+        /// <summary>
+        /// O TMDB devolve datas simples ("2021-05-10", sem timezone). O Npgsql exige que todo
+        /// DateTime gravado em coluna "timestamp with time zone" tenha Kind=Utc - um DateTime
+        /// comum vindo de DateTime.TryParse tem Kind=Unspecified e quebra o SaveChanges.
+        /// </summary>
+        private static DateTime? TryParseUtcDate(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+
+            return DateTime.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out var date)
+                ? date
+                : null;
         }
 
         private async Task<(Title Title, bool Created)> UpsertTitleFromMovieAsync(
@@ -180,7 +335,7 @@ namespace WebApplication1.Services
             title.ReleaseDate = TryParseUtcDate(movie.ReleaseDate);
             title.UpdatedAt = DateTime.UtcNow;
 
-            await AttachGenresAsync(title, movie.GenreIds, genreMap, ct);
+            await AttachGenresAsync(title, movie.ResolvedGenreIds, genreMap, ct);
 
             return (title, created);
         }
@@ -208,27 +363,9 @@ namespace WebApplication1.Services
             title.ReleaseDate = TryParseUtcDate(tv.FirstAirDate);
             title.UpdatedAt = DateTime.UtcNow;
 
-            await AttachGenresAsync(title, tv.GenreIds, genreMap, ct);
+            await AttachGenresAsync(title, tv.ResolvedGenreIds, genreMap, ct);
 
             return (title, created);
-        }
-
-        /// <summary>
-        /// O TMDB devolve datas simples ("2021-05-10", sem timezone). O Npgsql exige que todo
-        /// DateTime gravado em coluna "timestamp with time zone" tenha Kind=Utc - um DateTime
-        /// comum vindo de DateTime.TryParse tem Kind=Unspecified e quebra o SaveChanges.
-        /// </summary>
-        private static DateTime? TryParseUtcDate(string? value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return null;
-
-            return DateTime.TryParse(
-                value,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
-                out var date)
-                ? date
-                : null;
         }
 
         private async Task AttachGenresAsync(
@@ -238,8 +375,6 @@ namespace WebApplication1.Services
             {
                 if (!genreMap.TryGetValue(tmdbGenreId, out var genreName)) continue;
 
-                // Procura primeiro no banco, depois entre as entidades já rastreadas nesta mesma
-                // unidade de trabalho (evita criar o mesmo gênero duas vezes na mesma sincronização).
                 var genre = await _db.Genres.FirstOrDefaultAsync(g => g.Name == genreName, ct)
                     ?? _db.ChangeTracker.Entries<Genre>().Select(e => e.Entity).FirstOrDefault(g => g.Name == genreName);
 
@@ -252,8 +387,6 @@ namespace WebApplication1.Services
                 var alreadyLinked = title.Genres.Any(tg => tg.Genre != null && tg.Genre.Name == genreName);
                 if (!alreadyLinked)
                 {
-                    // Usa as propriedades de navegação (em vez dos IDs) porque o título ou o
-                    // gênero podem ainda não ter sido salvos - o EF resolve o FK sozinho.
                     title.Genres.Add(new TitleGenre { Title = title, Genre = genre });
                 }
             }
