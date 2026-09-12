@@ -66,7 +66,7 @@ builder.Services.AddScoped<AuthService>();
 var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? string.Empty)
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
@@ -79,6 +79,19 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod();
         }
+    });
+});*/
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5500",
+                "http://127.0.0.1:5500"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
