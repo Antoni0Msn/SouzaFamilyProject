@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Globalization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebApplication1.Configurations;
 using WebApplication1.Data;
 using WebApplication1.DTOs.External;
 using WebApplication1.Models;
@@ -17,19 +20,27 @@ namespace WebApplication1.Services
         private readonly AppDbContext _db;
         private readonly TmdbService _tmdb;
         private readonly WatchmodeService _watchmode;
+        private readonly WatchmodeOptions _watchmodeOptions;
         private readonly ILogger<SyncService> _logger;
 
-        public SyncService(AppDbContext db, TmdbService tmdb, WatchmodeService watchmode, ILogger<SyncService> logger)
+        public SyncService(
+            AppDbContext db,
+            TmdbService tmdb,
+            WatchmodeService watchmode,
+            IOptions<WatchmodeOptions> watchmodeOptions,
+            ILogger<SyncService> logger)
         {
             _db = db;
             _tmdb = tmdb;
             _watchmode = watchmode;
+            _watchmodeOptions = watchmodeOptions.Value;
             _logger = logger;
         }
 
         public async Task<SyncLog> SyncMoviesAsync(int pages = 1, CancellationToken ct = default)
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Movies", StartedAt = DateTime.UtcNow };
+            var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
 
             try
             {
@@ -43,11 +54,21 @@ namespace WebApplication1.Services
                     {
                         log.RecordsProcessed++;
 
+                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(movie.Id, isMovie: true, ct: ct);
+                        foreach (var s in sources) seenProviders.Add(s.Name);
+
+                        var allowedSources = FilterAllowedSources(sources);
+
+                        if (allowedSources.Count == 0)
+                        {
+                            // Não está disponível em nenhum streaming que cobrimos - não salva no banco.
+                            continue;
+                        }
+
                         var (title, created) = await UpsertTitleFromMovieAsync(movie, genreMap, ct);
                         if (created) log.RecordsCreated++; else log.RecordsUpdated++;
 
-                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(movie.Id, isMovie: true, ct: ct);
-                        await UpsertProvidersAsync(title, sources, ct);
+                        await UpsertProvidersAsync(title, allowedSources, ct);
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -66,6 +87,9 @@ namespace WebApplication1.Services
             finally
             {
                 log.FinishedAt = DateTime.UtcNow;
+                _logger.LogInformation(
+                    "Sync de filmes: providers vistos nesta execução: {Providers}",
+                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)");
                 _db.SyncLogs.Add(log);
                 await _db.SaveChangesAsync(ct);
             }
@@ -76,6 +100,7 @@ namespace WebApplication1.Services
         public async Task<SyncLog> SyncSeriesAsync(int pages = 1, CancellationToken ct = default)
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Series", StartedAt = DateTime.UtcNow };
+            var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
 
             try
             {
@@ -89,11 +114,21 @@ namespace WebApplication1.Services
                     {
                         log.RecordsProcessed++;
 
+                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(tv.Id, isMovie: false, ct: ct);
+                        foreach (var s in sources) seenProviders.Add(s.Name);
+
+                        var allowedSources = FilterAllowedSources(sources);
+
+                        if (allowedSources.Count == 0)
+                        {
+                            // Não está disponível em nenhum streaming que cobrimos - não salva no banco.
+                            continue;
+                        }
+
                         var (title, created) = await UpsertTitleFromTvAsync(tv, genreMap, ct);
                         if (created) log.RecordsCreated++; else log.RecordsUpdated++;
 
-                        var sources = await _watchmode.GetSourcesByTmdbIdAsync(tv.Id, isMovie: false, ct: ct);
-                        await UpsertProvidersAsync(title, sources, ct);
+                        await UpsertProvidersAsync(title, allowedSources, ct);
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -112,6 +147,9 @@ namespace WebApplication1.Services
             finally
             {
                 log.FinishedAt = DateTime.UtcNow;
+                _logger.LogInformation(
+                    "Sync de séries: providers vistos nesta execução: {Providers}",
+                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)");
                 _db.SyncLogs.Add(log);
                 await _db.SaveChangesAsync(ct);
             }
@@ -124,7 +162,7 @@ namespace WebApplication1.Services
         {
             var title = await _db.Titles
                 .Include(t => t.Genres).ThenInclude(tg => tg.Genre)
-                .FirstOrDefaultAsync(t => t.TmdbId == movie.Id, ct);
+                .FirstOrDefaultAsync(t => t.TmdbId == movie.Id && t.Type == "Movie", ct);
 
             var created = title is null;
             if (title is null)
@@ -139,7 +177,7 @@ namespace WebApplication1.Services
             title.PosterUrl = _tmdb.BuildPosterUrl(movie.PosterPath);
             title.BackdropUrl = _tmdb.BuildBackdropUrl(movie.BackdropPath);
             title.Rating = movie.VoteAverage;
-            title.ReleaseDate = DateTime.TryParse(movie.ReleaseDate, out var releaseDate) ? releaseDate : null;
+            title.ReleaseDate = TryParseUtcDate(movie.ReleaseDate);
             title.UpdatedAt = DateTime.UtcNow;
 
             await AttachGenresAsync(title, movie.GenreIds, genreMap, ct);
@@ -152,7 +190,7 @@ namespace WebApplication1.Services
         {
             var title = await _db.Titles
                 .Include(t => t.Genres).ThenInclude(tg => tg.Genre)
-                .FirstOrDefaultAsync(t => t.TmdbId == tv.Id, ct);
+                .FirstOrDefaultAsync(t => t.TmdbId == tv.Id && t.Type == "Series", ct);
 
             var created = title is null;
             if (title is null)
@@ -167,12 +205,30 @@ namespace WebApplication1.Services
             title.PosterUrl = _tmdb.BuildPosterUrl(tv.PosterPath);
             title.BackdropUrl = _tmdb.BuildBackdropUrl(tv.BackdropPath);
             title.Rating = tv.VoteAverage;
-            title.ReleaseDate = DateTime.TryParse(tv.FirstAirDate, out var releaseDate) ? releaseDate : null;
+            title.ReleaseDate = TryParseUtcDate(tv.FirstAirDate);
             title.UpdatedAt = DateTime.UtcNow;
 
             await AttachGenresAsync(title, tv.GenreIds, genreMap, ct);
 
             return (title, created);
+        }
+
+        /// <summary>
+        /// O TMDB devolve datas simples ("2021-05-10", sem timezone). O Npgsql exige que todo
+        /// DateTime gravado em coluna "timestamp with time zone" tenha Kind=Utc - um DateTime
+        /// comum vindo de DateTime.TryParse tem Kind=Unspecified e quebra o SaveChanges.
+        /// </summary>
+        private static DateTime? TryParseUtcDate(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+
+            return DateTime.TryParse(
+                value,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out var date)
+                ? date
+                : null;
         }
 
         private async Task AttachGenresAsync(
@@ -201,6 +257,20 @@ namespace WebApplication1.Services
                     title.Genres.Add(new TitleGenre { Title = title, Genre = genre });
                 }
             }
+        }
+
+        /// <summary>
+        /// Mantém apenas as fontes cujo nome bate com a lista Watchmode:AllowedProviders
+        /// configurada. Se a lista estiver vazia, não filtra nada (aceita qualquer streaming).
+        /// </summary>
+        private List<WatchmodeSourceDto> FilterAllowedSources(List<WatchmodeSourceDto> sources)
+        {
+            if (_watchmodeOptions.AllowedProviders.Count == 0) return sources;
+
+            return sources
+                .Where(s => _watchmodeOptions.AllowedProviders.Any(allowed =>
+                    string.Equals(allowed, s.Name, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
         }
 
         private async Task UpsertProvidersAsync(Title title, List<WatchmodeSourceDto> sources, CancellationToken ct)

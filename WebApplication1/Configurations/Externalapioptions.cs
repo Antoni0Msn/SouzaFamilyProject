@@ -15,8 +15,16 @@
         public const string SectionName = "Watchmode";
 
         public string ApiKey { get; set; } = string.Empty;
-        public string BaseUrl { get; set; } = "https://api.watchmode.com/v1";
+        public string BaseUrl { get; set; } = "https://api.watchmode.com/v1/";
         public string DefaultRegion { get; set; } = "BR";
+
+        /// <summary>
+        /// Nomes dos streamings que o Família Souza realmente cobre (exatamente como o
+        /// Watchmode devolve no campo "name", ex: "Netflix", "Amazon Prime Video").
+        /// Um título só é salvo no banco se tiver pelo menos um provider desta lista.
+        /// Lista vazia = aceita qualquer streaming (sem filtro).
+        /// </summary>
+        public List<string> AllowedProviders { get; set; } = [];
     }
 
     public class SyncOptions

@@ -36,10 +36,14 @@ namespace WebApplication1.Data
             {
                 entity.ToTable("Titles");
                 entity.HasIndex(t => t.Name);
-                entity.HasIndex(t => t.TmdbId);
                 entity.HasIndex(t => t.WatchmodeId);
                 entity.Property(t => t.Rating).HasPrecision(3, 1);
                 entity.Property(t => t.Type).HasMaxLength(20); // Movie / Series
+
+                // O TMDB usa o mesmo espaço de IDs numéricos pra filmes e séries -
+                // um filme id=550 e uma série id=550 podem existir ao mesmo tempo.
+                // Por isso a unicidade é por (TmdbId, Type), não só por TmdbId.
+                entity.HasIndex(t => new { t.TmdbId, t.Type }).IsUnique();
             });
 
             // ---------------- Genre ----------------
