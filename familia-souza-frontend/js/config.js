@@ -2,18 +2,19 @@
 // CONFIGURAÇÃO DO FRONTEND
 // ==============================
 // Troque pela URL da sua API REST em C# hospedada no Render.
-// Exemplo: https://familia-souza-api.onrender.com/api
-const API_BASE_URL = "https://SEU-BACKEND-RENDER.onrender.com/api";
+// Ex: "https://familia-souza-api.onrender.com/api" (produção)
+// Ex: "https://localhost:7101/api" (rodando local, junto com o backend)
+const API_BASE_URL = "https://localhost:7101/api";
 
-// true = usa o login demonstrativo enquanto a API ainda não estiver conectada.
-// Mude para false quando sua API estiver pronta.
-const DEMO_MODE = true;
+// false = usa a API C# de verdade em vez do login demonstrativo.
+const DEMO_MODE = false;
 
 window.APP_CONFIG = {
   API_BASE_URL,
   DEMO_MODE,
   endpoints: {
     login: "/auth/login",
+    register: "/auth/register",
     movies: "/movies",
     search: "/movies/search",
     favorites: "/favorites"
