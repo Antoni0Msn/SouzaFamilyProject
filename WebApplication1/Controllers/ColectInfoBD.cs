@@ -5,7 +5,9 @@ namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ControllerPrincipal : ControllerBase
+    public class ColectInfoBD : ControllerBase
     {
+
+
     }
 }
