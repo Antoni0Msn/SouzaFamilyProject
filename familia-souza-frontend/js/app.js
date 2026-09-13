@@ -72,13 +72,17 @@
       });
     });
   }
+  /*<div class="movie-art" style="--c1:${movie.c1};--c2:${movie.c2};">
+    <span class="poster-title">${escapeHtml(movie.title)}</span>
+  </div>*/
 
   function cardTemplate(movie, showProgress) {
     const isFavorite = state.favorites.includes(movie.id);
     return `
       <article class="movie-card" data-id="${movie.id}" title="${escapeHtml(movie.title)}">
-        <div class="movie-art" style="--c1:${movie.c1};--c2:${movie.c2};">
-          <span class="poster-title">${escapeHtml(movie.title)}</span>
+        <div
+        class="movie-art"
+        style="background-image: url('${movie.posterUrl}');">
         </div>
         <span class="card-badge">${movie.age}</span>
         <div class="card-actions">
