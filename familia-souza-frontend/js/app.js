@@ -1,51 +1,98 @@
 (() => {
-  const getStored = (key) => sessionStorage.getItem(key) || localStorage.getItem(key);
-  const token = getStored("fs_token");
+  const S = window.FSShared;
+  if (!S.requireAuthOrRedirect()) return;
 
-  if (!token) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  const user = (() => {
-    try { return JSON.parse(getStored("fs_user") || "{}"); } catch (_) { return {}; }
-  })();
-
-  document.getElementById("profileName").textContent = firstName(user.name || "Souza");
+  const user = S.getUser();
+  document.getElementById("profileName").textContent = S.firstName(user.name);
 
   const state = {
-    favorites: JSON.parse(localStorage.getItem("fs_favorites") || "[]"),
-    selectedMovie: null
+    favorites: S.getFavorites(),
+    selectedTitle: null,
+    // Cache local de tudo que já veio da API, pra abrir o modal sem precisar buscar de novo.
+    allTitles: []
   };
 
-  const continueRow = document.getElementById("continueRow");
   const movieRow = document.getElementById("movieRow");
   const seriesRow = document.getElementById("seriesRow");
   const listRow = document.getElementById("listRow");
   const emptyList = document.getElementById("emptyList");
   const listCount = document.getElementById("listCount");
-  const modal = document.getElementById("movieModal");
-  const toast = document.getElementById("toast");
 
-  renderAll();
+  init();
   bindNavigation();
-  bindProfileMenu();
+  S.bindProfileMenu();
+  S.bindLogoutButtons();
+  S.bindSettingsModal();
+  S.bindModalClose("movieModal");
   bindSearch();
-  bindModal();
-  bindLogout();
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      S.closeModal("movieModal");
+      S.closeModal("settingsModal");
+      document.getElementById("searchPanel").hidden = true;
+    }
+  });
 
   window.addEventListener("scroll", () => {
     document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 15);
   });
 
-  function renderAll() {
-    const continued = MOVIES.filter((movie) => movie.progress > 0);
-    const films = MOVIES.filter((movie) => movie.type === "Filme").slice(0, 10);
-    const series = MOVIES.filter((movie) => movie.type === "Série").slice(0, 10);
-    const list = MOVIES.filter((movie) => state.favorites.includes(movie.id));
+  async function init() {
+    const [moviesPage, seriesPage] = await Promise.all([
+      S.fetchTitles({ type: "Movie", page: 1, pageSize: 20 }),
+      S.fetchTitles({ type: "Series", page: 1, pageSize: 20 })
+    ]);
 
-    renderRow(continueRow, continued, true);
-    renderRow(movieRow, films);
+    const movies = moviesPage.items;
+    const series = seriesPage.items;
+
+    cacheTitles([...movies, ...series]);
+    renderAll(movies, series);
+    renderHero(movies, series);
+  }
+
+  function cacheTitles(titles) {
+    for (const title of titles) {
+      const index = state.allTitles.findIndex((t) => t.id === title.id);
+      if (index >= 0) state.allTitles[index] = title;
+      else state.allTitles.push(title);
+    }
+  }
+
+  // ---------------- Hero (destaque) ----------------
+
+  function renderHero(movies, series) {
+    // Escolhe aleatoriamente entre os títulos mais bem avaliados, pra variar a cada visita
+    // em vez de sempre mostrar o mesmo destaque fixo.
+    const pool = [...movies, ...series].slice(0, 8);
+    if (pool.length === 0) {
+      document.getElementById("heroTitle").textContent = "Bem-vindo à Família Souza";
+      document.getElementById("heroDescription").textContent = "Seu catálogo ainda está sendo preparado.";
+      return;
+    }
+
+    const featured = pool[Math.floor(Math.random() * pool.length)];
+    state.featuredTitle = featured;
+
+    document.getElementById("heroTitle").textContent = featured.name;
+    document.getElementById("heroDescription").textContent = featured.description || "";
+
+    const year = featured.releaseDate ? new Date(featured.releaseDate).getFullYear() : null;
+    const rating = featured.rating ? `⭐ ${featured.rating.toFixed(1)}` : null;
+    const genres = featured.genres && featured.genres.length ? featured.genres.join(" · ") : null;
+    document.getElementById("heroMeta").innerHTML = [year, rating, genres]
+      .filter(Boolean)
+      .map((item) => `<span>${S.escapeHtml(String(item))}</span>`)
+      .join("");
+  }
+
+  // ---------------- Renderização das fileiras ----------------
+
+  function renderAll(movies, series) {
+    const list = state.allTitles.filter((title) => state.favorites.includes(title.id));
+
+    renderRow(movieRow, movies);
     renderRow(seriesRow, series);
     renderRow(listRow, list);
 
@@ -54,10 +101,11 @@
     listRow.hidden = list.length === 0;
   }
 
-  function renderRow(container, movies, showProgress = false) {
-    container.innerHTML = movies.map((movie) => cardTemplate(movie, showProgress)).join("");
+  function renderRow(container, titles) {
+    container.innerHTML = titles.map((title) => S.cardTemplate(title, state.favorites.includes(title.id))).join("");
+
     container.querySelectorAll(".movie-card").forEach((card) => {
-      card.addEventListener("click", () => openMovie(Number(card.dataset.id)));
+      card.addEventListener("click", () => openTitle(Number(card.dataset.id)));
     });
     container.querySelectorAll("[data-favorite]").forEach((button) => {
       button.addEventListener("click", (event) => {
@@ -68,101 +116,47 @@
     container.querySelectorAll("[data-play]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.stopPropagation();
-        openMovie(Number(button.dataset.play));
+        openTitle(Number(button.dataset.play));
       });
     });
   }
-  /*<div class="movie-art" style="--c1:${movie.c1};--c2:${movie.c2};">
-    <span class="poster-title">${escapeHtml(movie.title)}</span>
-  </div>*/
 
-  function cardTemplate(movie, showProgress) {
-    const isFavorite = state.favorites.includes(movie.id);
-    return `
-      <article class="movie-card" data-id="${movie.id}" title="${escapeHtml(movie.title)}">
-        <div
-        class="movie-art"
-        style="background-image: url('${movie.posterUrl}');">
-        </div>
-        <span class="card-badge">${movie.age}</span>
-        <div class="card-actions">
-          <button class="card-mini-btn" data-play="${movie.id}" aria-label="Abrir ${escapeHtml(movie.title)}">▶</button>
-          <button class="card-mini-btn" data-favorite="${movie.id}" aria-label="${isFavorite ? "Remover da lista" : "Adicionar à lista"}">${isFavorite ? "✓" : "＋"}</button>
-        </div>
-        ${showProgress && movie.progress > 0 ? `<div class="progress-bar"><span style="width:${movie.progress}%"></span></div>` : ""}
-      </article>
-    `;
-  }
-
-  function openMovie(id) {
-    const movie = MOVIES.find((item) => item.id === id);
-    if (!movie) return;
-    state.selectedMovie = movie;
-
-    document.getElementById("modalArt").style.background = `radial-gradient(circle at 72% 26%, rgba(255,255,255,.18), transparent 23%), linear-gradient(125deg, ${movie.c1}, ${movie.c2} 76%)`;
-    document.getElementById("modalType").textContent = movie.type.toUpperCase();
-    document.getElementById("modalTitle").textContent = movie.title;
-    document.getElementById("modalMeta").textContent = `${movie.year} · ${movie.age} · ${movie.duration} · ${movie.genre}`;
-    document.getElementById("modalDescription").textContent = movie.description;
-    document.getElementById("modalList").innerHTML = state.favorites.includes(movie.id) ? "✓ &nbsp; Na minha lista" : "＋ &nbsp; Minha lista";
-
-    modal.hidden = false;
-    document.body.style.overflow = "hidden";
-  }
-
-  function closeModal() {
-    modal.hidden = true;
-    document.body.style.overflow = "";
-  }
-
-  function bindModal() {
-    document.querySelectorAll("[data-close-modal]").forEach((element) => element.addEventListener("click", closeModal));
-    document.getElementById("modalWatch").addEventListener("click", () => {
-      showToast(`Abrindo “${state.selectedMovie?.title || "título"}”…`);
-      closeModal();
-    });
-    document.getElementById("modalList").addEventListener("click", () => {
-      if (state.selectedMovie) toggleFavorite(state.selectedMovie.id);
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        closeModal();
-        document.getElementById("searchPanel").hidden = true;
-      }
-    });
+  function openTitle(id) {
+    const title = state.allTitles.find((item) => item.id === id);
+    if (!title) return;
+    state.selectedTitle = title;
+    S.openTitleModal(title, state.favorites, toggleFavorite);
   }
 
   function toggleFavorite(id) {
     state.favorites = state.favorites.includes(id)
-      ? state.favorites.filter((movieId) => movieId !== id)
+      ? state.favorites.filter((titleId) => titleId !== id)
       : [...state.favorites, id];
-    localStorage.setItem("fs_favorites", JSON.stringify(state.favorites));
-    renderAll();
-    if (state.selectedMovie) openMovie(state.selectedMovie.id);
-    showToast(state.favorites.includes(id) ? "Adicionado à sua lista." : "Removido da sua lista.");
+    S.setFavorites(state.favorites);
+
+    const movies = state.allTitles.filter((t) => t.type === "Movie");
+    const series = state.allTitles.filter((t) => t.type === "Series");
+    renderAll(movies, series);
+
+    if (state.selectedTitle) openTitle(state.selectedTitle.id);
+    S.showToast(state.favorites.includes(id) ? "Adicionado à sua lista." : "Removido da sua lista.");
   }
+
+  // ---------------- Navegação / UI ----------------
 
   function bindNavigation() {
-    document.getElementById("heroWatchButton").addEventListener("click", () => openMovie(1));
-    document.getElementById("heroInfoButton").addEventListener("click", () => openMovie(1));
-    document.querySelectorAll("[data-scroll-target]").forEach((button) => {
-      button.addEventListener("click", () => document.getElementById(button.dataset.scrollTarget)?.scrollIntoView({ behavior: "smooth" }));
-    });
-  }
-
-  function bindProfileMenu() {
-    const button = document.getElementById("profileButton");
-    const menu = document.getElementById("profileMenu");
-    button.addEventListener("click", () => {
-      const expanded = button.getAttribute("aria-expanded") === "true";
-      button.setAttribute("aria-expanded", String(!expanded));
-      menu.hidden = expanded;
-    });
-    document.addEventListener("click", (event) => {
-      if (!event.target.closest(".profile-menu-wrap")) {
-        menu.hidden = true;
-        button.setAttribute("aria-expanded", "false");
+    document.getElementById("heroWatchButton").addEventListener("click", () => {
+      const featured = state.featuredTitle;
+      if (!featured) return;
+      const withUrl = (featured.providers || []).find((p) => p.watchUrl);
+      if (withUrl) {
+        window.open(withUrl.watchUrl, "_blank", "noopener");
+      } else {
+        openTitle(featured.id);
       }
+    });
+    document.getElementById("heroInfoButton").addEventListener("click", () => {
+      if (state.featuredTitle) openTitle(state.featuredTitle.id);
     });
   }
 
@@ -170,6 +164,7 @@
     const panel = document.getElementById("searchPanel");
     const input = document.getElementById("searchInput");
     const results = document.getElementById("searchResults");
+    let searchTimer = null;
 
     document.getElementById("searchButton").addEventListener("click", () => {
       panel.hidden = false;
@@ -178,43 +173,44 @@
       setTimeout(() => input.focus(), 50);
     });
 
-    document.getElementById("closeSearch").addEventListener("click", () => { panel.hidden = true; });
+    document.getElementById("closeSearch").addEventListener("click", () => {
+      panel.hidden = true;
+    });
 
     input.addEventListener("input", () => {
-      const query = input.value.trim().toLowerCase();
-      if (!query) { results.innerHTML = ""; return; }
-      const matches = MOVIES.filter((movie) => `${movie.title} ${movie.genre} ${movie.type}`.toLowerCase().includes(query)).slice(0, 9);
-      results.innerHTML = matches.length ? matches.map((movie) => `
-        <article class="result-card" data-result-id="${movie.id}">
-          <p>${movie.type} · ${movie.year}</p>
-          <h3>${escapeHtml(movie.title)}</h3>
-          <p>${escapeHtml(movie.genre)}</p>
-        </article>
-      `).join("") : `<p style="color:#777">Nenhum título encontrado.</p>`;
-      results.querySelectorAll("[data-result-id]").forEach((card) => card.addEventListener("click", () => {
-        panel.hidden = true;
-        openMovie(Number(card.dataset.resultId));
-      }));
+      const query = input.value.trim();
+      clearTimeout(searchTimer);
+
+      if (!query) {
+        results.innerHTML = "";
+        return;
+      }
+
+      searchTimer = setTimeout(async () => {
+        const page = await S.fetchTitles({ q: query, page: 1, pageSize: 9 });
+        cacheTitles(page.items);
+
+        results.innerHTML = page.items.length
+          ? page.items
+              .map(
+                (title) => `
+                  <article class="result-card" data-result-id="${title.id}">
+                    <p>${title.type === "Movie" ? "Filme" : "Série"}${title.releaseDate ? " · " + new Date(title.releaseDate).getFullYear() : ""}</p>
+                    <h3>${S.escapeHtml(title.name)}</h3>
+                    <p>${S.escapeHtml((title.genres || []).join(", "))}</p>
+                  </article>
+                `
+              )
+              .join("")
+          : `<p style="color:#777">Nenhum título encontrado.</p>`;
+
+        results.querySelectorAll("[data-result-id]").forEach((card) =>
+          card.addEventListener("click", () => {
+            panel.hidden = true;
+            openTitle(Number(card.dataset.resultId));
+          })
+        );
+      }, 300);
     });
   }
-
-  function bindLogout() {
-    document.getElementById("logoutButton").addEventListener("click", () => {
-      sessionStorage.removeItem("fs_token");
-      sessionStorage.removeItem("fs_user");
-      localStorage.removeItem("fs_token");
-      localStorage.removeItem("fs_user");
-      window.location.href = "index.html";
-    });
-  }
-
-  function showToast(message) {
-    toast.textContent = message;
-    toast.classList.add("show");
-    clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => toast.classList.remove("show"), 2300);
-  }
-
-  function firstName(name) { return String(name).trim().split(/\s+/)[0] || "Souza"; }
-  function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char])); }
 })();

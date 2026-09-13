@@ -181,11 +181,32 @@ button { border: 0; cursor: pointer; }
 .modal-body h2 { margin: 0 0 8px; font-size: 1.9rem; letter-spacing: -.05em; }
 .modal-body > p:not(.eyebrow):not(.modal-meta) { color: #b8b8b8; max-width: 720px; line-height: 1.65; font-size: .87rem; }
 .modal-meta { color: #d5d5d5; font-size: .73rem; margin: 0 0 12px; }
-.modal-actions { display: flex; gap: 9px; margin-top: 20px; }
+.modal-actions { display: flex; gap: 9px; margin-top: 20px; flex-wrap: wrap; }
+.modal-watch-buttons { display: flex; gap: 9px; flex-wrap: wrap; }
 .modal-close { top: 15px; right: 17px; width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,.55); font-size: 1.5rem; }
 
 .toast { position: fixed; z-index: 150; right: 24px; bottom: 24px; max-width: min(360px, calc(100vw - 48px)); padding: 12px 15px; border-radius: 7px; background: #eee; color: #111; font-size: .78rem; box-shadow: 0 15px 35px rgba(0,0,0,.4); transform: translateY(20px); opacity: 0; pointer-events: none; transition: .22s ease; }
 .toast.show { transform: translateY(0); opacity: 1; }
+
+/* Configurações */
+.settings-card { position: relative; z-index: 1; width: min(420px, 100%); background: #151515; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 30px 90px rgba(0,0,0,.55); padding: 30px; }
+.settings-card h2 { margin: 6px 0 22px; font-size: 1.5rem; letter-spacing: -.03em; }
+.settings-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+.settings-field span { color: #999; font-size: .82rem; }
+.settings-field strong { font-weight: 600; font-size: .9rem; }
+.settings-note { color: #777; font-size: .78rem; margin: 16px 0 22px; line-height: 1.5; }
+
+/* Página de catálogo completo */
+.catalog-header { padding: 110px 4vw 20px; }
+.catalog-header h1 { margin: 0 0 6px; font-size: clamp(1.6rem, 3vw, 2.3rem); letter-spacing: -.03em; }
+.catalog-header p { margin: 0; color: #999; font-size: .85rem; }
+.catalog-filters { display: flex; gap: 8px; padding: 0 4vw 20px; }
+.catalog-filters button { padding: 9px 16px; border-radius: 20px; background: #181818; color: #ccc; border: 1px solid var(--line); font-size: .8rem; font-weight: 600; }
+.catalog-filters button.active { background: white; color: #111; }
+.catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 14px; padding: 0 4vw 30px; }
+.catalog-grid .movie-card { aspect-ratio: 2 / 3; }
+.catalog-empty { padding: 60px 4vw; text-align: center; color: #777; }
+.load-more-wrap { display: flex; justify-content: center; padding: 10px 4vw 60px; }
 
 [hidden] { display: none !important; }
 

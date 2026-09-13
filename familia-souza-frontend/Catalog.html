@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Família Souza — Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-page">
+  <div class="app-shell">
+    <header class="navbar" id="navbar">
+      <a class="brand brand-nav" href="home.html" aria-label="Família Souza">
+        <span>FAMÍLIA</span>
+        <strong>SOUZA</strong>
+      </a>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="home.html">Início</a>
+        <a href="catalog.html?type=Movie">Filmes</a>
+        <a href="catalog.html?type=Series">Séries</a>
+        <a href="home.html#minha-lista">Minha lista</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-button" id="searchButton" aria-label="Pesquisar" title="Pesquisar">⌕</button>
+        <div class="profile-menu-wrap">
+          <button class="profile-button" id="profileButton" aria-expanded="false" aria-haspopup="true">
+            <span class="profile-avatar">FS</span>
+            <span class="profile-name" id="profileName">Souza</span>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="profile-menu" id="profileMenu" hidden>
+            <button id="settingsButton" type="button">Configurações</button>
+            <button id="logoutButton" type="button">Sair</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="catalog-header">
+        <h1 id="catalogTitle">Catálogo</h1>
+        <p id="catalogSubtitle">Carregando…</p>
+      </div>
+
+      <div class="catalog-filters">
+        <button data-type="" id="filterAll">Tudo</button>
+        <button data-type="Movie" id="filterMovies">Filmes</button>
+        <button data-type="Series" id="filterSeries">Séries</button>
+      </div>
+
+      <div class="catalog-grid" id="catalogGrid"></div>
+      <div class="catalog-empty" id="catalogEmpty" hidden>Nenhum título encontrado.</div>
+
+      <div class="load-more-wrap">
+        <button class="secondary-button" id="loadMoreButton">Carregar mais</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="search-panel" id="searchPanel" hidden>
+    <div class="search-panel-inner">
+      <button class="close-button" id="closeSearch" aria-label="Fechar pesquisa">×</button>
+      <p class="section-kicker">PESQUISAR</p>
+      <input id="searchInput" type="search" placeholder="Filmes, séries, gêneros..." autocomplete="off" />
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="movieModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <article class="movie-modal-card">
+      <button class="close-button modal-close" data-close-modal aria-label="Fechar">×</button>
+      <div class="modal-art" id="modalArt"></div>
+      <div class="modal-body">
+        <p class="eyebrow" id="modalType">FILME</p>
+        <h2 id="modalTitle">Título</h2>
+        <p class="modal-meta" id="modalMeta"></p>
+        <p id="modalDescription"></p>
+        <div class="modal-actions">
+          <div class="modal-watch-buttons" id="modalWatchButtons"></div>
+          <button class="secondary-button" id="modalList">＋ &nbsp; Minha lista</button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="modal" id="settingsModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <article class="settings-card">
+      <button class="close-button modal-close" data-close-modal aria-label="Fechar">×</button>
+      <p class="eyebrow">CONTA</p>
+      <h2>Configurações</h2>
+      <div class="settings-field">
+        <span>Nome</span>
+        <strong id="settingsName">—</strong>
+      </div>
+      <div class="settings-field">
+        <span>E-mail</span>
+        <strong id="settingsEmail">—</strong>
+      </div>
+      <p class="settings-note">Mais opções de conta e preferências chegam em breve.</p>
+      <button class="secondary-button full" id="settingsLogout">Sair da conta</button>
+    </article>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/shared.js"></script>
+  <script src="js/catalog.js"></script>
+</body>
+</html>

@@ -20,8 +20,8 @@
 
       <nav class="main-nav" aria-label="Navegação principal">
         <a class="active" href="#inicio">Início</a>
-        <a href="#filmes">Filmes</a>
-        <a href="#series">Séries</a>
+        <a href="catalog.html?type=Movie">Filmes</a>
+        <a href="catalog.html?type=Series">Séries</a>
         <a href="#minha-lista">Minha lista</a>
       </nav>
 
@@ -34,8 +34,7 @@
             <span class="chevron">⌄</span>
           </button>
           <div class="profile-menu" id="profileMenu" hidden>
-            <a href="#">Perfil</a>
-            <a href="#">Configurações</a>
+            <button id="settingsButton" type="button">Configurações</button>
             <button id="logoutButton" type="button">Sair</button>
           </div>
         </div>
@@ -45,10 +44,10 @@
     <main id="inicio">
       <section class="hero" id="hero">
         <div class="hero-content">
-          <p class="eyebrow">FAMÍLIA SOUZA ORIGINAL</p>
-          <h1>Uma casa. Uma família.<br /><span>Milhares de histórias.</span></h1>
-          <p class="hero-copy">Encontre seus filmes e séries favoritos em um único lugar. Crie sua lista e continue de onde parou.</p>
-          <div class="hero-meta"><span>2026</span><span>16+</span><span>2h 14min</span><span>Drama · Aventura</span></div>
+          <p class="eyebrow">FAMÍLIA SOUZA</p>
+          <h1 id="heroTitle">Carregando…</h1>
+          <p class="hero-copy" id="heroDescription"></p>
+          <div class="hero-meta" id="heroMeta"></div>
           <div class="hero-actions">
             <button class="primary-button" id="heroWatchButton">▶ &nbsp; Assistir</button>
             <button class="secondary-button" id="heroInfoButton">ⓘ &nbsp; Mais informações</button>
@@ -58,23 +57,13 @@
         <div class="hero-side-fade"></div>
       </section>
 
-      <section class="content-section" id="continuar">
-        <div class="section-heading">
-          <div>
-            <p class="section-kicker">PARA VOCÊ</p>
-            <h2>Continue assistindo</h2>
-          </div>
-          <button class="text-button" data-scroll-target="continuar">Ver tudo <span>→</span></button>
-        </div>
-        <div class="movie-row continue-row" id="continueRow"></div>
-      </section>
-
       <section class="content-section" id="filmes">
         <div class="section-heading">
           <div>
             <p class="section-kicker">CATÁLOGO</p>
-            <h2>Filmes populares</h2>
+            <h2>Filmes</h2>
           </div>
+          <a class="text-button" href="catalog.html?type=Movie">Ver tudo <span>→</span></a>
         </div>
         <div class="movie-row" id="movieRow"></div>
       </section>
@@ -83,8 +72,9 @@
         <div class="section-heading">
           <div>
             <p class="section-kicker">EM ALTA</p>
-            <h2>Séries para maratonar</h2>
+            <h2>Séries</h2>
           </div>
+          <a class="text-button" href="catalog.html?type=Series">Ver tudo <span>→</span></a>
         </div>
         <div class="movie-row" id="seriesRow"></div>
       </section>
@@ -135,17 +125,36 @@
         <p class="modal-meta" id="modalMeta"></p>
         <p id="modalDescription"></p>
         <div class="modal-actions">
-          <button class="primary-button" id="modalWatch">▶ &nbsp; Assistir</button>
+          <div class="modal-watch-buttons" id="modalWatchButtons"></div>
           <button class="secondary-button" id="modalList">＋ &nbsp; Minha lista</button>
         </div>
       </div>
     </article>
   </div>
 
+  <div class="modal" id="settingsModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <article class="settings-card">
+      <button class="close-button modal-close" data-close-modal aria-label="Fechar">×</button>
+      <p class="eyebrow">CONTA</p>
+      <h2>Configurações</h2>
+      <div class="settings-field">
+        <span>Nome</span>
+        <strong id="settingsName">—</strong>
+      </div>
+      <div class="settings-field">
+        <span>E-mail</span>
+        <strong id="settingsEmail">—</strong>
+      </div>
+      <p class="settings-note">Mais opções de conta e preferências chegam em breve.</p>
+      <button class="secondary-button full" id="settingsLogout">Sair da conta</button>
+    </article>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="js/config.js"></script>
-  <script src="js/data.js"></script>
+  <script src="js/shared.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
