@@ -20,8 +20,8 @@ builder.Services.AddOpenApi();
 // ---------------- Banco de dados (Supabase / PostgreSQL) ----------------
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException(
-        "A connection string 'DefaultConnection' n„o foi encontrada. " +
-        "Configure-a via appsettings, user-secrets (dev) ou vari·vel de ambiente ConnectionStrings__DefaultConnection (produÁ„o).");
+        "A connection string 'DefaultConnection' n√£o foi encontrada. " +
+        "Configure-a via appsettings, user-secrets (dev) ou vari√°vel de ambiente ConnectionStrings__DefaultConnection (produ√ß√£o).");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -62,7 +62,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<AuthService>();
 
-// ---------------- CORS (necess·rio para o frontend chamar a API do navegador) ----------------
+// ---------------- CORS (necess√°rio para o frontend chamar a API do navegador) ----------------
 var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?? string.Empty)
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
@@ -72,7 +72,7 @@ var allowedOrigins = (builder.Configuration.GetValue<string>("AllowedOrigins") ?
     {
         if (allowedOrigins.Length == 0)
         {
-            // Nenhuma origem configurada - libera geral (sÛ recomendado em desenvolvimento).
+            // Nenhuma origem configurada - libera geral (s√≥ recomendado em desenvolvimento).
             policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
         }
         else
@@ -88,14 +88,15 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:5500",
-                "http://127.0.0.1:5500"
+                "http://127.0.0.1:5500",
+                "https://souzafamily.netlify.app"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
-// ---------------- IntegraÁıes externas (TMDB / Watchmode) ----------------
+// ---------------- Integra√ß√µes externas (TMDB / Watchmode) ----------------
 builder.Services.Configure<TmdbOptions>(builder.Configuration.GetSection(TmdbOptions.SectionName));
 builder.Services.Configure<WatchmodeOptions>(builder.Configuration.GetSection(WatchmodeOptions.SectionName));
 builder.Services.Configure<SyncOptions>(builder.Configuration.GetSection(SyncOptions.SectionName));
@@ -104,9 +105,9 @@ builder.Services.AddHttpClient<TmdbService>();
 builder.Services.AddHttpClient<WatchmodeService>();
 builder.Services.AddScoped<SyncService>();
 
-// ---------------- Porta din‚mica (Render/containers) ----------------
-// Render injeta a vari·vel de ambiente PORT e espera que a aplicaÁ„o escute nela.
-// Localmente (sem essa vari·vel), o Kestrel continua usando o launchSettings.json normalmente.
+// ---------------- Porta din√¢mica (Render/containers) ----------------
+// Render injeta a vari√°vel de ambiente PORT e espera que a aplica√ß√£o escute nela.
+// Localmente (sem essa vari√°vel), o Kestrel continua usando o launchSettings.json normalmente.
 var renderPort = Environment.GetEnvironmentVariable("PORT");
 
 var app = builder.Build();
@@ -123,8 +124,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// O Render j· termina o HTTPS na borda e encaminha via HTTP internamente.
-// ForÁar o redirect aqui dentro do container causaria loop de redirecionamento.
+// O Render j√° termina o HTTPS na borda e encaminha via HTTP internamente.
+// For√ßar o redirect aqui dentro do container causaria loop de redirecionamento.
 if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
