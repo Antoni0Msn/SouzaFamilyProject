@@ -33,6 +33,13 @@
         /// GET /api/sync/debug/sources num título que você sabe que está no serviço.
         /// </summary>
         public List<int> AllowedSourceIds { get; set; } = [];
+
+        /// <summary>
+        /// Pausa (em milissegundos) entre chamadas ao Watchmode durante a sincronização,
+        /// pra não bater no rate limit deles (erro 429) em coleções grandes. Aumente esse
+        /// valor se continuar recebendo 429 mesmo com o retry automático.
+        /// </summary>
+        public int RequestDelayMs { get; set; } = 300;
     }
 
     public class SyncOptions

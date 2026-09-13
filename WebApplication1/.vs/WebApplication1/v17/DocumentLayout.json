@@ -7,12 +7,28 @@
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\titlescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\dtos\\common\\pagedresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:dtos\\common\\pagedresultdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\external\\watchmodeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:services\\external\\watchmodeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\publicinfos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -39,10 +55,6 @@
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\configurations\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:configurations\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -54,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
@@ -82,20 +94,59 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PagedResultDto.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Common\\PagedResultDto.cs",
+              "RelativeDocumentMoniker": "DTOs\\Common\\PagedResultDto.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Common\\PagedResultDto.cs",
+              "RelativeToolTip": "DTOs\\Common\\PagedResultDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-13T16:34:16.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-13T16:22:40.064Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Watchmodeservice.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\External\\Watchmodeservice.cs",
+              "RelativeDocumentMoniker": "Services\\External\\Watchmodeservice.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\External\\Watchmodeservice.cs",
+              "RelativeToolTip": "Services\\External\\Watchmodeservice.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAqwGgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-13T16:22:15.727Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Titlescontroller.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Titlescontroller.cs",
               "RelativeDocumentMoniker": "Controllers\\Titlescontroller.cs",
               "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Titlescontroller.cs",
               "RelativeToolTip": "Controllers\\Titlescontroller.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAqwEUAAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAqwFwAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-13T16:04:11.523Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "Titleresponsedto.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Titles\\Titleresponsedto.cs",
               "RelativeDocumentMoniker": "DTOs\\Titles\\Titleresponsedto.cs",
@@ -108,20 +159,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "SyncService.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
               "RelativeDocumentMoniker": "Services\\SyncService.cs",
               "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
               "RelativeToolTip": "Services\\SyncService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAJkBAAAAAAAAAAAqwMkBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-12T19:21:28.057Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "PublicInfos.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\PublicInfos.cs",
               "RelativeDocumentMoniker": "Services\\PublicInfos.cs",
@@ -133,7 +184,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "ColectInfoBD.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\ColectInfoBD.cs",
               "RelativeDocumentMoniker": "Controllers\\ColectInfoBD.cs",
@@ -145,7 +196,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "SyncController.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\SyncController.cs",
               "RelativeDocumentMoniker": "Controllers\\SyncController.cs",
@@ -157,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 11,
               "Title": "Authcontroller.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Authcontroller.cs",
               "RelativeDocumentMoniker": "Controllers\\Authcontroller.cs",
@@ -169,7 +220,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -181,7 +232,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "AuthService.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "Services\\AuthService.cs",
@@ -193,19 +244,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 4,
               "Title": "Externalapioptions.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Configurations\\Externalapioptions.cs",
               "RelativeDocumentMoniker": "Configurations\\Externalapioptions.cs",
               "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Configurations\\Externalapioptions.cs",
               "RelativeToolTip": "Configurations\\Externalapioptions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAA6wDYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T16:56:06.943Z"
+              "WhenOpened": "2026-09-12T16:56:06.943Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "JwtOptions.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Configurations\\JwtOptions.cs",
               "RelativeDocumentMoniker": "Configurations\\JwtOptions.cs",

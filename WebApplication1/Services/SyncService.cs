@@ -84,6 +84,8 @@ namespace WebApplication1.Services
                             errors++;
                             _logger.LogWarning(itemEx, "Falha ao processar o filme TMDB id={TmdbId}", movie.Id);
                         }
+
+                        if (_watchmodeOptions.RequestDelayMs > 0) await Task.Delay(_watchmodeOptions.RequestDelayMs, ct);
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -152,6 +154,8 @@ namespace WebApplication1.Services
                             errors++;
                             _logger.LogWarning(itemEx, "Falha ao processar a série TMDB id={TmdbId}", tv.Id);
                         }
+
+                        if (_watchmodeOptions.RequestDelayMs > 0) await Task.Delay(_watchmodeOptions.RequestDelayMs, ct);
                     }
 
                     await _db.SaveChangesAsync(ct);
@@ -264,11 +268,16 @@ namespace WebApplication1.Services
                             errors++;
                             _logger.LogWarning(itemEx, "Falha ao processar título TMDB id={TmdbId} (Watchmode id={WatchmodeId})", item.TmdbId, item.Id);
                         }
+
+                        if (_watchmodeOptions.RequestDelayMs > 0) await Task.Delay(_watchmodeOptions.RequestDelayMs, ct);
                     }
 
                     await _db.SaveChangesAsync(ct);
 
                     if (page >= list.TotalPages) break;
+
+                    // Pausa extra entre páginas (cada página já é uma chamada própria ao Watchmode).
+                    if (_watchmodeOptions.RequestDelayMs > 0) await Task.Delay(_watchmodeOptions.RequestDelayMs, ct);
                 }
 
                 log.Success = errors == 0;

@@ -44,8 +44,11 @@ namespace WebApplication1.Services.External
             var sourceIdsParam = string.Join(",", sourceIds);
             var url = $"list-titles/?source_ids={sourceIdsParam}&regions={region}&sort_by=popularity_desc&page={page}&limit={limit}";
 
-            var response = await _httpClient.GetFromJsonAsync<WatchmodeListTitlesResponseDto>(url, ct);
-            return response ?? new WatchmodeListTitlesResponseDto();
+            var response = await GetWithRetryAsync(url, ct);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadFromJsonAsync<WatchmodeListTitlesResponseDto>(cancellationToken: ct);
+            return result ?? new WatchmodeListTitlesResponseDto();
         }
 
         /// <summary>
@@ -61,7 +64,7 @@ namespace WebApplication1.Services.External
             var region = regions ?? _options.DefaultRegion;
             var url = $"title/{type}-{tmdbId}/details/?append_to_response=sources&regions={region}";
 
-            var response = await _httpClient.GetAsync(url, ct);
+            var response = await GetWithRetryAsync(url, ct);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -73,6 +76,30 @@ namespace WebApplication1.Services.External
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadFromJsonAsync<WatchmodeTitleDetailsDto>(cancellationToken: ct);
+        }
+
+        /// <summary>
+        /// GET com retry automático quando o Watchmode devolve 429 (rate limit). Respeita o
+        /// header Retry-After se ele vier; senão usa backoff exponencial (2s, 4s, 8s...).
+        /// Depois de esgotar as tentativas, devolve a resposta (com erro) pro chamador decidir.
+        /// </summary>
+        private async Task<HttpResponseMessage> GetWithRetryAsync(string url, CancellationToken ct, int maxRetries = 5)
+        {
+            var attempt = 0;
+
+            while (true)
+            {
+                var response = await _httpClient.GetAsync(url, ct);
+
+                if (response.StatusCode != HttpStatusCode.TooManyRequests || attempt >= maxRetries)
+                {
+                    return response;
+                }
+
+                attempt++;
+                var delay = response.Headers.RetryAfter?.Delta ?? TimeSpan.FromSeconds(Math.Pow(2, attempt));
+                await Task.Delay(delay, ct);
+            }
         }
     }
 }

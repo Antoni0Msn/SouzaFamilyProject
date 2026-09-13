@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.DTOs.Common;
 using WebApplication1.DTOs.Titles;
 using WebApplication1.Models;
 
@@ -20,13 +21,21 @@ namespace WebApplication1.Controllers
         }
 
         /// <summary>
-        /// GET /api/titles?type=Movie&amp;q=busca&amp;take=20
-        /// type: "Movie" ou "Series" (omitido = os dois). q: busca por nome. take: limite (padrão 30, máx 100).
+        /// GET /api/titles?type=Movie&amp;q=busca&amp;page=1&amp;pageSize=20
+        /// type: "Movie" ou "Series" (omitido = os dois). q: busca por nome.
+        /// page/pageSize: paginação (pageSize máx 100).
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetTitles(
-            [FromQuery] string? type, [FromQuery] string? q, [FromQuery] int take = 30, CancellationToken ct = default)
+            [FromQuery] string? type,
+            [FromQuery] string? q,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20,
+            CancellationToken ct = default)
         {
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
             var query = BaseQuery();
 
             if (!string.IsNullOrWhiteSpace(type))
@@ -39,12 +48,25 @@ namespace WebApplication1.Controllers
                 query = query.Where(t => EF.Functions.ILike(t.Name, $"%{q}%"));
             }
 
-            var titles = await query
+            var totalCount = await query.CountAsync(ct);
+
+            var items = await query
                 .OrderByDescending(t => t.Rating)
-                .Take(Math.Clamp(take, 1, 100))
+                .ThenByDescending(t => t.ReleaseDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync(ct);
 
-            return Ok(titles.Select(MapToDto));
+            var result = new PagedResultDto<TitleResponseDto>
+            {
+                Items = items.Select(MapToDto).ToList(),
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("{id:int}")]
