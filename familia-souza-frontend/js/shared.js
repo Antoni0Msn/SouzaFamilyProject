@@ -98,6 +98,20 @@ window.FSShared = (() => {
     }
   }
 
+  async function fetchGenres() {
+    try {
+      const response = await fetch(
+        `${window.APP_CONFIG.API_BASE_URL}/genres`,
+        { headers: authHeaders() }
+      );
+      if (!response.ok) return [];
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
   function cardTemplate(title, isFavorite) {
     const artStyle = title.posterUrl
       ? `background-image:url('${title.posterUrl}');background-size:cover;background-position:center;`
@@ -255,6 +269,7 @@ window.FSShared = (() => {
     setFavorites,
     fetchTitles,
     fetchMe,
+    fetchGenres,
     cardTemplate,
     openTitleModal,
     renderWatchButtons,

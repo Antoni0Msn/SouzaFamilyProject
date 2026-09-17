@@ -11,6 +11,7 @@
     favorites: S.getFavorites(),
     allTitles: [],
     type: params.get("type") || "",
+    genre: params.get("genre") || "",
     page: 1,
     pageSize: 30,
     totalPages: 1
@@ -25,6 +26,7 @@
   S.bindSettingsModal();
   S.bindModalClose("movieModal");
   bindFilters();
+  bindGenreFilter();
   bindSearch();
   bindLoadMore();
 
@@ -60,9 +62,58 @@
     updateActive();
   }
 
+  async function bindGenreFilter() {
+    const toggle = document.getElementById("genreDropdownToggle");
+    const menu = document.getElementById("genreDropdownMenu");
+    const label = document.getElementById("genreDropdownLabel");
+
+    const genres = [{ name: "" , display: "Todos os gêneros" }, ...(await S.fetchGenres()).map((g) => ({ name: g.name, display: g.name }))];
+
+    function renderMenu() {
+      menu.innerHTML = genres
+        .map(
+          (g) => `<button type="button" data-genre="${S.escapeHtml(g.name)}" class="${g.name === state.genre ? "active" : ""}">${S.escapeHtml(g.display)}</button>`
+        )
+        .join("");
+
+      menu.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.genre = button.dataset.genre;
+          label.textContent = button.textContent;
+          closeMenu();
+          loadPage(1, { replace: true });
+        });
+      });
+    }
+
+    function openMenu() {
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMenu() {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", () => {
+      menu.hidden ? openMenu() : closeMenu();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest("#genreDropdown")) closeMenu();
+    });
+
+    const current = genres.find((g) => g.name === state.genre);
+    if (current) label.textContent = current.display;
+
+    renderMenu();
+  }
+
   async function loadPage(page, { replace = false } = {}) {
     const result = await S.fetchTitles({
       ...(state.type ? { type: state.type } : {}),
+      ...(state.genre ? { genre: state.genre } : {}),
       page,
       pageSize: state.pageSize
     });
@@ -83,7 +134,8 @@
   }
 
   function updateHeader(totalCount) {
-    const label = state.type === "Movie" ? "Filmes" : state.type === "Series" ? "Séries" : "Catálogo completo";
+    const baseLabel = state.type === "Movie" ? "Filmes" : state.type === "Series" ? "Séries" : "Catálogo completo";
+    const label = state.genre ? `${baseLabel} · ${state.genre}` : baseLabel;
     document.getElementById("catalogTitle").textContent = label;
     document.getElementById("catalogSubtitle").textContent =
       totalCount > 0 ? `${totalCount} ${totalCount === 1 ? "título" : "títulos"}` : "Nenhum título encontrado.";
