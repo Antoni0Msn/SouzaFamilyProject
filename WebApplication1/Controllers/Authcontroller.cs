@@ -35,14 +35,22 @@ namespace WebApplication1.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
-            return Ok(new
-            {
-                id = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                name = User.FindFirstValue(ClaimTypes.Name),
-                email = User.FindFirstValue(ClaimTypes.Email)
-            });
+            var result = await _authService.GetProfileAsync(GetUserId());
+            if (!result.Success) return NotFound(new { message = result.Error });
+            return Ok(result.Profile);
         }
+
+        [Authorize]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe(UpdateProfileRequestDto request)
+        {
+            var result = await _authService.UpdateProfileAsync(GetUserId(), request);
+            if (!result.Success) return BadRequest(new { message = result.Error });
+            return Ok(result.Profile);
+        }
+
+        private int GetUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 }

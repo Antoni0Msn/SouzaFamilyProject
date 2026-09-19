@@ -28,11 +28,30 @@ namespace WebApplication1.DTOs.Auth
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
     }
 
     public class AuthResponseDto
     {
         public string Token { get; set; } = string.Empty;
         public UserDto User { get; set; } = new();
+    }
+
+    /// <summary>Perfil completo devolvido por GET/PUT /api/auth/me (sem token).</summary>
+    public class UserProfileDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
+    }
+
+    public class UpdateProfileRequestDto
+    {
+        [Required]
+        public string DisplayName { get; set; } = string.Empty;
+
+        /// <summary>Opcional. Mande string vazia pra limpar o telefone salvo.</summary>
+        public string? PhoneNumber { get; set; }
     }
 }

@@ -10,5 +10,6 @@ namespace WebApplication1.Models
 
         public ICollection<Favorite> Favorites { get; set; } = [];
         public ICollection<WatchHistory> WatchHistory { get; set; } = [];
+        public ICollection<UserProvider> Providers { get; set; } = [];
     }
 }

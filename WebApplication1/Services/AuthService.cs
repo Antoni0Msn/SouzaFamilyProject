@@ -20,6 +20,16 @@ namespace WebApplication1.Services
         public static AuthResult Ok(AuthResponseDto response) => new() { Success = true, Response = response };
     }
 
+    public class ProfileResult
+    {
+        public bool Success { get; init; }
+        public string? Error { get; init; }
+        public UserProfileDto? Profile { get; init; }
+
+        public static ProfileResult Fail(string error) => new() { Success = false, Error = error };
+        public static ProfileResult Ok(UserProfileDto profile) => new() { Success = true, Profile = profile };
+    }
+
     public class AuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -74,6 +84,40 @@ namespace WebApplication1.Services
             return AuthResult.Ok(BuildAuthResponse(user));
         }
 
+        public async Task<ProfileResult> GetProfileAsync(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null) return ProfileResult.Fail("Usuário não encontrado.");
+
+            return ProfileResult.Ok(BuildProfileDto(user));
+        }
+
+        public async Task<ProfileResult> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null) return ProfileResult.Fail("Usuário não encontrado.");
+
+            user.DisplayName = request.DisplayName;
+            user.PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim();
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+                return ProfileResult.Fail(errors);
+            }
+
+            return ProfileResult.Ok(BuildProfileDto(user));
+        }
+
+        private static UserProfileDto BuildProfileDto(ApplicationUser user) => new()
+        {
+            Id = user.Id,
+            Name = user.DisplayName,
+            Email = user.Email ?? string.Empty,
+            PhoneNumber = user.PhoneNumber
+        };
+
         private AuthResponseDto BuildAuthResponse(ApplicationUser user)
         {
             return new AuthResponseDto
@@ -83,7 +127,8 @@ namespace WebApplication1.Services
                 {
                     Id = user.Id,
                     Name = user.DisplayName,
-                    Email = user.Email ?? string.Empty
+                    Email = user.Email ?? string.Empty,
+                    PhoneNumber = user.PhoneNumber
                 }
             };
         }

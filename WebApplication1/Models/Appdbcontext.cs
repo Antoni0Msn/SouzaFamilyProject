@@ -26,6 +26,7 @@ namespace WebApplication1.Data
         public DbSet<Favorite> Favorites => Set<Favorite>();
         public DbSet<WatchHistory> WatchHistories => Set<WatchHistory>();
         public DbSet<SyncLog> SyncLogs => Set<SyncLog>();
+        public DbSet<UserProvider> UserProviders => Set<UserProvider>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -171,6 +172,25 @@ namespace WebApplication1.Data
                 entity.HasIndex(s => s.StartedAt);
                 entity.Property(s => s.Source).HasMaxLength(50);
                 entity.Property(s => s.SyncType).HasMaxLength(50);
+            });
+
+            // ---------------- UserProvider ----------------
+            builder.Entity<UserProvider>(entity =>
+            {
+                entity.ToTable("UserProviders");
+
+                entity.HasOne(up => up.User)
+                    .WithMany(u => u.Providers)
+                    .HasForeignKey(up => up.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(up => up.Provider)
+                    .WithMany()
+                    .HasForeignKey(up => up.ProviderId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Um usuário não pode marcar o mesmo streaming duas vezes
+                entity.HasIndex(up => new { up.UserId, up.ProviderId }).IsUnique();
             });
 
             // Identity usa nomes de tabela AspNetUsers, AspNetRoles etc. por padrão.
