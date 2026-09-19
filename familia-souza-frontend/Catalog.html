@@ -51,9 +51,13 @@
         <button data-type="" id="filterAll">Tudo</button>
         <button data-type="Movie" id="filterMovies">Filmes</button>
         <button data-type="Series" id="filterSeries">Séries</button>
-        <select id="genreFilter" aria-label="Filtrar por gênero">
-          <option value="">Todos os gêneros</option>
-        </select>
+        <div class="genre-dropdown" id="genreDropdown">
+          <button class="genre-dropdown-toggle" id="genreDropdownToggle" type="button" aria-haspopup="true" aria-expanded="false">
+            <span id="genreDropdownLabel">Todos os gêneros</span>
+            <span class="chevron">⌄</span>
+          </button>
+          <div class="genre-dropdown-menu" id="genreDropdownMenu" hidden></div>
+        </div>
       </div>
 
       <div class="catalog-grid" id="catalogGrid"></div>

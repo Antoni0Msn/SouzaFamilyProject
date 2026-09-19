@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <title>Família Souza — Criar conta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <div class="login-overlay"></div>
+
+    <header class="login-header">
+      <a class="brand brand-large" href="index.html" aria-label="Família Souza">
+        <span>FAMÍLIA</span>
+        <strong>SOUZA</strong>
+      </a>
+    </header>
+
+    <section class="login-card" aria-labelledby="register-title">
+      <h1 id="register-title">Criar conta</h1>
+      <p class="login-subtitle">Junte-se à Família Souza.</p>
+
+      <form id="registerForm" class="login-form" novalidate>
+        <label class="field">
+          <span>Nome</span>
+          <input id="displayName" name="displayName" type="text" autocomplete="name" placeholder="Seu nome" required />
+        </label>
+
+        <label class="field">
+          <span>E-mail</span>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" required />
+        </label>
+
+        <label class="field">
+          <span>Senha</span>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Pelo menos 6 caracteres" required minlength="6" />
+            <button id="togglePassword" class="ghost-icon" type="button" aria-label="Mostrar senha" title="Mostrar senha">◉</button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span>Confirmar senha</span>
+          <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" placeholder="Repita a senha" required minlength="6" />
+        </label>
+
+        <div id="registerError" class="form-message error" role="alert" hidden></div>
+
+        <button class="primary-button full" type="submit">Criar conta</button>
+      </form>
+
+      <div class="login-footer-copy">
+        <p>Já tem conta? <a href="index.html"><strong>Entrar</strong></a></p>
+      </div>
+    </section>
+
+    <footer class="site-footer">Família Souza · Entre. Escolha. Assista.</footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/register.js"></script>
+</body>
+</html>
