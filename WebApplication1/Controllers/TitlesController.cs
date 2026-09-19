@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
 using WebApplication1.DTOs.Common;
 using WebApplication1.DTOs.Titles;
+using WebApplication1.Mappings;
 using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
@@ -65,7 +66,7 @@ namespace WebApplication1.Controllers
 
             var result = new PagedResultDto<TitleResponseDto>
             {
-                Items = items.Select(MapToDto).ToList(),
+                Items = items.Select(TitleMapper.ToDto).ToList(),
                 Page = page,
                 PageSize = pageSize,
                 TotalCount = totalCount,
@@ -81,7 +82,7 @@ namespace WebApplication1.Controllers
             var title = await BaseQuery().FirstOrDefaultAsync(t => t.Id == id, ct);
             if (title is null) return NotFound();
 
-            return Ok(MapToDto(title));
+            return Ok(TitleMapper.ToDto(title));
         }
 
         private IQueryable<Title> BaseQuery()
@@ -91,33 +92,5 @@ namespace WebApplication1.Controllers
                 .Include(t => t.Providers).ThenInclude(tp => tp.Provider)
                 .AsNoTracking();
         }
-
-        private static TitleResponseDto MapToDto(Title title) => new()
-        {
-            Id = title.Id,
-            Name = title.Name,
-            OriginalName = title.OriginalName,
-            Description = title.Description,
-            Type = title.Type,
-            ReleaseDate = title.ReleaseDate,
-            Rating = title.Rating,
-            PosterUrl = title.PosterUrl,
-            BackdropUrl = title.BackdropUrl,
-            Genres = title.Genres
-                .Where(tg => tg.Genre != null)
-                .Select(tg => tg.Genre.Name)
-                .ToList(),
-            Providers = title.Providers
-                .Where(tp => tp.Provider != null)
-                .Select(tp => new ProviderResponseDto
-                {
-                    Id = tp.ProviderId,
-                    Name = tp.Provider.Name,
-                    LogoUrl = tp.Provider.LogoUrl,
-                    WatchUrl = tp.WatchUrl,
-                    Type = tp.Type
-                })
-                .ToList()
-        };
     }
 }
