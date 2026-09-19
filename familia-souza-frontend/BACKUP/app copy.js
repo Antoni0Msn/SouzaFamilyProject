@@ -75,16 +75,10 @@
     const featured = pool[Math.floor(Math.random() * pool.length)];
     state.featuredTitle = featured;
 
-    const backdrop = featured.backdropUrl || featured.posterUrl;
-    const heroEl = document.getElementById("hero");
-    heroEl.style.background = backdrop
-      ? `linear-gradient(90deg, rgba(0,0,0,.88) 0%, rgba(0,0,0,.65) 45%, rgba(0,0,0,.25) 78%, transparent 100%), ` +
-        `linear-gradient(180deg, rgba(8,8,8,0) 45%, #080808 100%), ` +
-        `url('${backdrop}') center top / cover no-repeat`
-      : ""; // sem imagem - volta pro gradiente padrão definido no CSS
-
     document.getElementById("heroTitle").textContent = featured.name;
     document.getElementById("heroDescription").textContent = featured.description || "";
+    
+    document.getElementById("heroImage").style.backgroundImage = `url('${featured.imageUrl}')`;
 
     const year = featured.releaseDate ? new Date(featured.releaseDate).getFullYear() : null;
     const rating = featured.rating ? `⭐ ${featured.rating.toFixed(1)}` : null;
