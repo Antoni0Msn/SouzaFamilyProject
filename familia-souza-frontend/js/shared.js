@@ -45,6 +45,29 @@ window.FSShared = (() => {
     );
   }
 
+  /**
+   * Formata dígitos como telefone brasileiro conforme a quantidade digitada:
+   * (DD, (DD) NNNN, (DD) NNNN-NNNN (fixo) ou (DD) NNNNN-NNNN (celular).
+   */
+  function maskPhoneBR(value) {
+    const digits = String(value).replace(/\D/g, "").slice(0, 11);
+    const len = digits.length;
+
+    if (len === 0) return "";
+    if (len <= 2) return `(${digits}`;
+    if (len <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    if (len <= 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  }
+
+  /** Aplica a máscara em tempo real a um <input>, sempre que o usuário digitar. */
+  function bindPhoneMask(input) {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      input.value = maskPhoneBR(input.value);
+    });
+  }
+
   function getFavorites() {
     return JSON.parse(localStorage.getItem("fs_favorites") || "[]");
   }
@@ -102,6 +125,34 @@ window.FSShared = (() => {
     try {
       const response = await fetch(
         `${window.APP_CONFIG.API_BASE_URL}/genres`,
+        { headers: authHeaders() }
+      );
+      if (!response.ok) return [];
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  async function fetchAllProviders() {
+    try {
+      const response = await fetch(
+        `${window.APP_CONFIG.API_BASE_URL}/providers`,
+        { headers: authHeaders() }
+      );
+      if (!response.ok) return [];
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  async function fetchMyProviders() {
+    try {
+      const response = await fetch(
+        `${window.APP_CONFIG.API_BASE_URL}/providers/me`,
         { headers: authHeaders() }
       );
       if (!response.ok) return [];
@@ -247,14 +298,113 @@ window.FSShared = (() => {
 
     bindModalClose("settingsModal");
 
+    const nameInput = document.getElementById("settingsNameInput");
+    const emailInput = document.getElementById("settingsEmailInput");
+    const phoneInput = document.getElementById("settingsPhoneInput");
+    bindPhoneMask(phoneInput);
+
+    const profileMessage = document.getElementById("settingsProfileMessage");
+    const saveProfileButton = document.getElementById("settingsSaveProfile");
+    const providersContainer = document.getElementById("settingsProviders");
+    const saveProvidersButton = document.getElementById("settingsSaveProviders");
+
     settingsButton.addEventListener("click", async () => {
-      const me = await fetchMe();
-      const user = getUser();
-      document.getElementById("settingsName").textContent = me?.name || user.name || "—";
-      document.getElementById("settingsEmail").textContent = me?.email || user.email || "—";
       document.getElementById("settingsModal").hidden = false;
       document.body.style.overflow = "hidden";
+      setMessage(profileMessage, "");
+
+      const me = await fetchMe();
+      if (me) {
+        nameInput.value = me.name || "";
+        emailInput.value = me.email || "";
+        phoneInput.value = maskPhoneBR(me.phoneNumber || "");
+      }
+
+      if (providersContainer) await loadProviderCheckboxes(providersContainer);
     });
+
+    saveProfileButton?.addEventListener("click", async () => {
+      setMessage(profileMessage, "");
+      saveProfileButton.disabled = true;
+
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_BASE_URL}/auth/me`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", ...authHeaders() },
+          body: JSON.stringify({
+            displayName: nameInput.value.trim(),
+            phoneNumber: phoneInput.value.trim()
+          })
+        });
+
+        const payload = await response.json().catch(() => null);
+
+        if (!response.ok) {
+          setMessage(profileMessage, payload?.message || "Não foi possível salvar.", true);
+          return;
+        }
+
+        const currentUser = getUser();
+        currentUser.name = payload.name;
+        const storage = sessionStorage.getItem("fs_token") ? sessionStorage : localStorage;
+        storage.setItem("fs_user", JSON.stringify(currentUser));
+
+        const profileNameEl = document.getElementById("profileName");
+        if (profileNameEl) profileNameEl.textContent = firstName(payload.name);
+
+        showToast("Dados atualizados.");
+      } finally {
+        saveProfileButton.disabled = false;
+      }
+    });
+
+    saveProvidersButton?.addEventListener("click", async () => {
+      const selected = Array.from(providersContainer.querySelectorAll("input[type=checkbox]:checked")).map((el) =>
+        Number(el.value)
+      );
+
+      saveProvidersButton.disabled = true;
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_BASE_URL}/providers/me`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", ...authHeaders() },
+          body: JSON.stringify({ providerIds: selected })
+        });
+
+        showToast(response.ok ? "Streamings salvos." : "Não foi possível salvar os streamings.");
+      } finally {
+        saveProvidersButton.disabled = false;
+      }
+    });
+  }
+
+  async function loadProviderCheckboxes(container) {
+    const [allProviders, myProviderIds] = await Promise.all([fetchAllProviders(), fetchMyProviders()]);
+
+    container.innerHTML = allProviders.length
+      ? allProviders
+          .map(
+            (provider) => `
+              <label class="provider-check">
+                <input type="checkbox" value="${provider.id}" ${myProviderIds.includes(provider.id) ? "checked" : ""} />
+                ${escapeHtml(provider.name)}
+              </label>
+            `
+          )
+          .join("")
+      : `<p style="color:#777;font-size:.8rem;margin:0;">Nenhum streaming cadastrado ainda.</p>`;
+  }
+
+  function setMessage(el, text, isError) {
+    if (!el) return;
+    if (!text) {
+      el.hidden = true;
+      el.textContent = "";
+      return;
+    }
+    el.hidden = false;
+    el.textContent = text;
+    el.classList.toggle("error", Boolean(isError));
   }
 
   return {
@@ -267,9 +417,13 @@ window.FSShared = (() => {
     escapeHtml,
     getFavorites,
     setFavorites,
+    maskPhoneBR,
+    bindPhoneMask,
     fetchTitles,
     fetchMe,
     fetchGenres,
+    fetchAllProviders,
+    fetchMyProviders,
     cardTemplate,
     openTitleModal,
     renderWatchButtons,

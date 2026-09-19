@@ -138,15 +138,34 @@
       <button class="close-button modal-close" data-close-modal aria-label="Fechar">×</button>
       <p class="eyebrow">CONTA</p>
       <h2>Configurações</h2>
-      <div class="settings-field">
+
+      <label class="field">
         <span>Nome</span>
-        <strong id="settingsName">—</strong>
-      </div>
-      <div class="settings-field">
+        <input id="settingsNameInput" type="text" placeholder="Seu nome" />
+      </label>
+
+      <label class="field">
         <span>E-mail</span>
-        <strong id="settingsEmail">—</strong>
-      </div>
-      <p class="settings-note">Mais opções de conta e preferências chegam em breve.</p>
+        <input id="settingsEmailInput" type="email" disabled />
+      </label>
+
+      <label class="field">
+        <span>Telefone</span>
+        <input id="settingsPhoneInput" type="tel" placeholder="(41) 99999-9999" maxlength="15" />
+      </label>
+
+      <div id="settingsProfileMessage" class="form-message error" hidden></div>
+      <button class="primary-button full" id="settingsSaveProfile">Salvar dados</button>
+
+      <div class="settings-divider"></div>
+
+      <p class="settings-section-title">Meus streamings</p>
+      <p class="settings-note">Marque os que você assina.</p>
+      <div class="settings-providers" id="settingsProviders"></div>
+      <button class="secondary-button full" id="settingsSaveProviders">Salvar streamings</button>
+
+      <div class="settings-divider"></div>
+
       <button class="secondary-button full" id="settingsLogout">Sair da conta</button>
     </article>
   </div>
