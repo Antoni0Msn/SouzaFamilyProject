@@ -15,6 +15,7 @@
   const movieRow = document.getElementById("movieRow");
   const seriesRow = document.getElementById("seriesRow");
   const listRow = document.getElementById("listRow");
+  const continueRow = document.getElementById("continueRow");
   const emptyList = document.getElementById("emptyList");
   const listCount = document.getElementById("listCount");
 
@@ -39,17 +40,27 @@
   });
 
   async function init() {
-    const [moviesPage, seriesPage] = await Promise.all([
+    const [moviesPage, seriesPage, history] = await Promise.all([
       S.fetchTitles({ type: "Movie", page: 1, pageSize: 20 }),
-      S.fetchTitles({ type: "Series", page: 1, pageSize: 20 })
+      S.fetchTitles({ type: "Series", page: 1, pageSize: 20 }),
+      S.fetchHistory(20)
     ]);
 
     const movies = moviesPage.items;
     const series = seriesPage.items;
 
-    cacheTitles([...movies, ...series]);
+    cacheTitles([...movies, ...series, ...history]);
     renderAll(movies, series);
     renderHero(movies, series);
+    renderContinueWatching(history);
+  }
+
+  function renderContinueWatching(history) {
+    const section = document.getElementById("continuar");
+    if (!section) return;
+
+    section.hidden = history.length === 0;
+    if (history.length > 0) renderRow(continueRow, history);
   }
 
   function cacheTitles(titles) {
@@ -159,6 +170,7 @@
       const withUrl = (featured.providers || []).find((p) => p.watchUrl);
       if (withUrl) {
         window.open(withUrl.watchUrl, "_blank", "noopener");
+        S.markWatched(featured.id);
       } else {
         openTitle(featured.id);
       }

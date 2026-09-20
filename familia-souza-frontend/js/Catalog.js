@@ -12,6 +12,8 @@
     allTitles: [],
     type: params.get("type") || "",
     genre: params.get("genre") || "",
+    sort: params.get("sort") || "",
+    onlyMyProviders: false,
     page: 1,
     pageSize: 30,
     totalPages: 1
@@ -23,22 +25,30 @@
 
   S.bindProfileMenu();
   S.bindLogoutButtons();
-  S.bindSettingsModal();
+  S.bindSettingsModal(refreshAfterSettings);
   S.bindModalClose("movieModal");
   bindFilters();
   bindGenreFilter();
+  bindSortFilter();
+  bindMyProvidersFilter();
   bindSearch();
   bindLoadMore();
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      const settingsWasOpen = !document.getElementById("settingsModal").hidden;
       S.closeModal("movieModal");
       S.closeModal("settingsModal");
       document.getElementById("searchPanel").hidden = true;
+      if (settingsWasOpen) refreshAfterSettings();
     }
   });
 
   loadPage(1, { replace: true });
+
+  function refreshAfterSettings() {
+    loadPage(1, { replace: true });
+  }
 
   function bindFilters() {
     const buttons = {
@@ -110,10 +120,77 @@
     renderMenu();
   }
 
+  function bindSortFilter() {
+    const toggle = document.getElementById("sortDropdownToggle");
+    const menu = document.getElementById("sortDropdownMenu");
+    const label = document.getElementById("sortDropdownLabel");
+
+    const options = [
+      { value: "", display: "Avaliação" },
+      { value: "year", display: "Ano" },
+      { value: "name", display: "A-Z" }
+    ];
+
+    function renderMenu() {
+      menu.innerHTML = options
+        .map(
+          (opt) =>
+            `<button type="button" data-sort="${opt.value}" class="${opt.value === state.sort ? "active" : ""}">${opt.display}</button>`
+        )
+        .join("");
+
+      menu.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.sort = button.dataset.sort;
+          label.textContent = button.textContent;
+          menu.querySelectorAll("button").forEach((b) => b.classList.toggle("active", b === button));
+          closeMenu();
+          loadPage(1, { replace: true });
+        });
+      });
+    }
+
+    function openMenu() {
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMenu() {
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", () => {
+      menu.hidden ? openMenu() : closeMenu();
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest("#sortDropdown")) closeMenu();
+    });
+
+    const current = options.find((opt) => opt.value === state.sort);
+    if (current) label.textContent = current.display;
+
+    renderMenu();
+  }
+
+  function bindMyProvidersFilter() {
+    const button = document.getElementById("filterMyProviders");
+    if (!button) return;
+
+    button.addEventListener("click", () => {
+      state.onlyMyProviders = !state.onlyMyProviders;
+      button.classList.toggle("active", state.onlyMyProviders);
+      loadPage(1, { replace: true });
+    });
+  }
+
   async function loadPage(page, { replace = false } = {}) {
     const result = await S.fetchTitles({
       ...(state.type ? { type: state.type } : {}),
       ...(state.genre ? { genre: state.genre } : {}),
+      ...(state.sort ? { sort: state.sort } : {}),
+      ...(state.onlyMyProviders ? { onlyMyProviders: true } : {}),
       page,
       pageSize: state.pageSize
     });

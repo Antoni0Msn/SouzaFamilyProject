@@ -163,6 +163,28 @@ window.FSShared = (() => {
     }
   }
 
+  async function fetchHistory(take = 20) {
+    try {
+      const response = await fetch(
+        `${window.APP_CONFIG.API_BASE_URL}/history?take=${take}`,
+        { headers: authHeaders() }
+      );
+      if (!response.ok) return [];
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  /** Registra "assistido" pro título — dispara e esquece, sem travar a abertura do link. */
+  function markWatched(titleId) {
+    fetch(`${window.APP_CONFIG.API_BASE_URL}/history/${titleId}`, {
+      method: "POST",
+      headers: authHeaders()
+    }).catch((error) => console.error(error));
+  }
+
   function cardTemplate(title, isFavorite) {
     const artStyle = title.posterUrl
       ? `background-image:url('${title.posterUrl}');background-size:cover;background-position:center;`
@@ -210,13 +232,13 @@ window.FSShared = (() => {
     document.getElementById("modalList").innerHTML = isFavorite ? "✓ &nbsp; Na minha lista" : "＋ &nbsp; Minha lista";
     document.getElementById("modalList").onclick = () => onToggleFavorite(title.id);
 
-    renderWatchButtons(title.providers || []);
+    renderWatchButtons(title.providers || [], title.id);
 
     modal.hidden = false;
     document.body.style.overflow = "hidden";
   }
 
-  function renderWatchButtons(providers) {
+  function renderWatchButtons(providers, titleId) {
     const container = document.getElementById("modalWatchButtons");
     if (!container) return;
 
@@ -241,6 +263,7 @@ window.FSShared = (() => {
       button.addEventListener("click", () => {
         const url = button.getAttribute("data-watch-url");
         if (url) window.open(url, "_blank", "noopener");
+        if (titleId) markWatched(titleId);
       });
     });
   }
@@ -252,11 +275,14 @@ window.FSShared = (() => {
     document.body.style.overflow = "";
   }
 
-  function bindModalClose(modalId) {
+  function bindModalClose(modalId, onClose) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     modal.querySelectorAll("[data-close-modal]").forEach((el) =>
-      el.addEventListener("click", () => closeModal(modalId))
+      el.addEventListener("click", () => {
+        closeModal(modalId);
+        if (typeof onClose === "function") onClose();
+      })
     );
   }
 
@@ -292,11 +318,11 @@ window.FSShared = (() => {
     document.getElementById("settingsLogout")?.addEventListener("click", logout);
   }
 
-  async function bindSettingsModal() {
+  async function bindSettingsModal(onClose) {
     const settingsButton = document.getElementById("settingsButton");
     if (!settingsButton) return;
 
-    bindModalClose("settingsModal");
+    bindModalClose("settingsModal", onClose);
 
     const nameInput = document.getElementById("settingsNameInput");
     const emailInput = document.getElementById("settingsEmailInput");
@@ -424,6 +450,8 @@ window.FSShared = (() => {
     fetchGenres,
     fetchAllProviders,
     fetchMyProviders,
+    fetchHistory,
+    markWatched,
     cardTemplate,
     openTitleModal,
     renderWatchButtons,
