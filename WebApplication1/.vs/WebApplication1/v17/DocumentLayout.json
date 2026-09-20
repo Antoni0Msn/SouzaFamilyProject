@@ -3,16 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\providerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\providerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\titlescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\titlescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\historycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\historycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\mapping\\titlemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:mapping\\titlemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\colectinfobd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\colectinfobd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\providerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:controllers\\providerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -51,20 +67,12 @@
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:services\\syncservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:configurations\\externalapioptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\external\\watchmodeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:services\\external\\watchmodeservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|solutionrelative:dtos\\titles\\titleresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{EA5E31D0-956E-4935-B1DC-DCACE728644E}|WebApplication1.csproj|c:\\users\\marti\\source\\repos\\antoni0msn\\souzafamilyproject\\webapplication1\\services\\publicinfos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -90,47 +98,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 11,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Providerscontroller.cs",
-              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Providerscontroller.cs",
-              "RelativeDocumentMoniker": "Controllers\\Providerscontroller.cs",
-              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Providerscontroller.cs",
-              "RelativeToolTip": "Controllers\\Providerscontroller.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-19T00:14:53.404Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Appdbcontext.cs",
-              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\Appdbcontext.cs",
-              "RelativeDocumentMoniker": "Models\\Appdbcontext.cs",
-              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\Appdbcontext.cs",
-              "RelativeToolTip": "Models\\Appdbcontext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAM4AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-19T00:13:50.636Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ApplicationUser.cs",
-              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\ApplicationUser.cs",
-              "RelativeDocumentMoniker": "Models\\ApplicationUser.cs",
-              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\ApplicationUser.cs",
-              "RelativeToolTip": "Models\\ApplicationUser.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-19T00:09:09.574Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
@@ -156,16 +125,20 @@
               "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "Models\\ApplicationUser.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "Models\\ApplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-19T00:09:09.574Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 12,
               "Title": "Userprovider.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\Userprovider.cs",
               "RelativeDocumentMoniker": "Models\\Userprovider.cs",
@@ -173,12 +146,11 @@
               "RelativeToolTip": "Models\\Userprovider.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-19T00:13:35.179Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-19T00:13:35.179Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "Auth.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Auth.cs",
               "RelativeDocumentMoniker": "DTOs\\Auth.cs",
@@ -186,12 +158,11 @@
               "RelativeToolTip": "DTOs\\Auth.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAqwDgAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-19T00:04:10.415Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-19T00:04:10.415Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 13,
               "Title": "GenresController.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\GenresController.cs",
               "RelativeDocumentMoniker": "Controllers\\GenresController.cs",
@@ -199,12 +170,11 @@
               "RelativeToolTip": "Controllers\\GenresController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-18T23:57:43.924Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-18T23:57:43.924Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "PagedResultDto.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Common\\PagedResultDto.cs",
               "RelativeDocumentMoniker": "DTOs\\Common\\PagedResultDto.cs",
@@ -212,25 +182,24 @@
               "RelativeToolTip": "DTOs\\Common\\PagedResultDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T16:34:16.325Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-13T16:34:16.325Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "TitlesController.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\TitlesController.cs",
               "RelativeDocumentMoniker": "Controllers\\TitlesController.cs",
               "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\TitlesController.cs",
               "RelativeToolTip": "Controllers\\TitlesController.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAqwF8AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAqwHoAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-13T16:04:11.523Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 7,
               "Title": "Authcontroller.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Authcontroller.cs",
               "RelativeDocumentMoniker": "Controllers\\Authcontroller.cs",
@@ -238,12 +207,11 @@
               "RelativeToolTip": "Controllers\\Authcontroller.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAAqwDcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T19:19:04.678Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T19:19:04.678Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "ColectInfoBD.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\ColectInfoBD.cs",
               "RelativeDocumentMoniker": "Controllers\\ColectInfoBD.cs",
@@ -251,24 +219,11 @@
               "RelativeToolTip": "Controllers\\ColectInfoBD.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T19:20:46.374Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T19:20:46.374Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "SyncService.cs",
-              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
-              "RelativeDocumentMoniker": "Services\\SyncService.cs",
-              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
-              "RelativeToolTip": "Services\\SyncService.cs",
-              "ViewState": "AgIAAJkBAAAAAAAAAAAqwMkBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T19:21:28.057Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 3,
               "Title": "Titleresponsedto.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\DTOs\\Titles\\Titleresponsedto.cs",
               "RelativeDocumentMoniker": "DTOs\\Titles\\Titleresponsedto.cs",
@@ -280,7 +235,68 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 10,
+              "Title": "Appdbcontext.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\Appdbcontext.cs",
+              "RelativeDocumentMoniker": "Models\\Appdbcontext.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Models\\Appdbcontext.cs",
+              "RelativeToolTip": "Models\\Appdbcontext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAM4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-19T00:13:50.636Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SyncService.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
+              "RelativeDocumentMoniker": "Services\\SyncService.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\SyncService.cs",
+              "RelativeToolTip": "Services\\SyncService.cs",
+              "ViewState": "AgIAABYBAAAAAAAAAAAYwDoBAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-12T19:21:28.057Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Providerscontroller.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Providerscontroller.cs",
+              "RelativeDocumentMoniker": "Controllers\\Providerscontroller.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Providerscontroller.cs",
+              "RelativeToolTip": "Controllers\\Providerscontroller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-19T00:14:53.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Historycontroller.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Historycontroller.cs",
+              "RelativeDocumentMoniker": "Controllers\\Historycontroller.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\Historycontroller.cs",
+              "RelativeToolTip": "Controllers\\Historycontroller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAA3AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-19T16:16:08.349Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "TitleMapper.cs",
+              "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Mapping\\TitleMapper.cs",
+              "RelativeDocumentMoniker": "Mapping\\TitleMapper.cs",
+              "ToolTip": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Mapping\\TitleMapper.cs",
+              "RelativeToolTip": "Mapping\\TitleMapper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-19T16:15:34.878Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "PublicInfos.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\PublicInfos.cs",
               "RelativeDocumentMoniker": "Services\\PublicInfos.cs",
@@ -292,7 +308,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 8,
               "Title": "AuthService.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "Services\\AuthService.cs",
@@ -300,12 +316,11 @@
               "RelativeToolTip": "Services\\AuthService.cs",
               "ViewState": "AgIAAHMAAAAAAAAAAAAqwKMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-12T16:56:20.749Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-12T16:56:20.749Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "Watchmodeservice.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Services\\External\\Watchmodeservice.cs",
               "RelativeDocumentMoniker": "Services\\External\\Watchmodeservice.cs",
@@ -317,7 +332,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "SyncController.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Controllers\\SyncController.cs",
               "RelativeDocumentMoniker": "Controllers\\SyncController.cs",
@@ -329,7 +344,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 15,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -341,7 +356,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -353,7 +368,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "Externalapioptions.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Configurations\\Externalapioptions.cs",
               "RelativeDocumentMoniker": "Configurations\\Externalapioptions.cs",
@@ -365,7 +380,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "JwtOptions.cs",
               "DocumentMoniker": "C:\\Users\\marti\\source\\repos\\Antoni0Msn\\SouzaFamilyProject\\WebApplication1\\Configurations\\JwtOptions.cs",
               "RelativeDocumentMoniker": "Configurations\\JwtOptions.cs",
