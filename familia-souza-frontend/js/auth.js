@@ -12,6 +12,9 @@
   const errorBox = document.getElementById("loginError");
   const rememberMe = document.getElementById("rememberMe");
   const forgotPassword = document.getElementById("forgotPassword");
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  let isLoading = false;
 
   togglePassword.addEventListener("click", () => {
     const hidden = passwordInput.type === "password";
@@ -27,6 +30,10 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    // Evita múltiplos envios (ex.: Enter pressionado várias vezes)
+    if (isLoading) return;
+
     clearError();
 
     const email = document.getElementById("email").value.trim();
@@ -37,10 +44,12 @@
       return;
     }
 
-    if (!password || password.length < 6) {
-      showError("A senha precisa ter pelo menos 6 caracteres.");
+    if (!password || password.length < 4) {
+      showError("A senha precisa ter pelo menos 4 caracteres.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const result = await login(email, password);
@@ -52,9 +61,11 @@
       (rememberMe.checked ? sessionStorage : localStorage).removeItem("fs_token");
       (rememberMe.checked ? sessionStorage : localStorage).removeItem("fs_user");
 
+      // Mantém o loading ativo durante o redirecionamento
       window.location.href = "home.html";
     } catch (error) {
       showError(error.message || "Não foi possível entrar. Tente novamente.");
+      setLoading(false); // só volta ao normal se der erro
     }
   });
 
@@ -86,6 +97,13 @@
       token: payload.token || payload.accessToken,
       user: payload.user || { name: payload.name || "Família Souza", email }
     };
+  }
+
+  function setLoading(loading) {
+    isLoading = loading;
+    submitButton.disabled = loading;
+    submitButton.classList.toggle("is-loading", loading);
+    submitButton.setAttribute("aria-busy", String(loading));
   }
 
   function showError(message) {
