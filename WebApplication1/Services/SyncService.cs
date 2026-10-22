@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebApplication1.Configurations;
@@ -39,19 +39,21 @@ namespace WebApplication1.Services
 
         // =====================================================================
         // FLUXO 1 (original): parte do TMDB "populares", filtra pelo Watchmode.
-        // Simples, mas desperdiça chamadas em títulos que não estão nos seus
-        // streamings. Bom para um sync incremental leve.
+        // forceRefresh = false (padrão): pula títulos que já estão resolvidos no
+        // banco (existem e têm ao menos um provider), sem gastar crédito.
         // =====================================================================
 
-        public async Task<SyncLog> SyncMoviesAsync(int pages = 1, CancellationToken ct = default)
+        public async Task<SyncLog> SyncMoviesAsync(int pages = 1, CancellationToken ct = default, bool forceRefresh = false)
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Movies", StartedAt = DateTime.UtcNow };
             var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
             var errors = 0;
+            var skipped = 0;
 
             try
             {
                 var genreMap = await _tmdb.GetMovieGenreMapAsync(ct);
+                var resolved = forceRefresh ? [] : await LoadResolvedKeysAsync(ct);
 
                 for (var page = 1; page <= pages; page++)
                 {
@@ -60,6 +62,13 @@ namespace WebApplication1.Services
                     foreach (var movie in popular.Results)
                     {
                         log.RecordsProcessed++;
+
+                        // Já está no banco com providers: 0 créditos gastos.
+                        if (resolved.Contains((movie.Id, "Movie")))
+                        {
+                            skipped++;
+                            continue;
+                        }
 
                         try
                         {
@@ -76,6 +85,7 @@ namespace WebApplication1.Services
                             if (created) log.RecordsCreated++; else log.RecordsUpdated++;
 
                             await UpsertProvidersAsync(title, allowedSources, ct);
+                            resolved.Add((movie.Id, "Movie"));
                         }
                         catch (Exception itemEx)
                         {
@@ -106,8 +116,8 @@ namespace WebApplication1.Services
             {
                 log.FinishedAt = DateTime.UtcNow;
                 _logger.LogInformation(
-                    "Sync de filmes: providers vistos nesta execução: {Providers}",
-                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)");
+                    "Sync de filmes: providers vistos nesta execução: {Providers}. Pulados (já no banco): {Skipped}",
+                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)", skipped);
                 _db.SyncLogs.Add(log);
                 await _db.SaveChangesAsync(ct);
             }
@@ -115,15 +125,17 @@ namespace WebApplication1.Services
             return log;
         }
 
-        public async Task<SyncLog> SyncSeriesAsync(int pages = 1, CancellationToken ct = default)
+        public async Task<SyncLog> SyncSeriesAsync(int pages = 1, CancellationToken ct = default, bool forceRefresh = false)
         {
             var log = new SyncLog { Source = "TMDB+Watchmode", SyncType = "Series", StartedAt = DateTime.UtcNow };
             var seenProviders = new SortedSet<string>(StringComparer.OrdinalIgnoreCase);
             var errors = 0;
+            var skipped = 0;
 
             try
             {
                 var genreMap = await _tmdb.GetTvGenreMapAsync(ct);
+                var resolved = forceRefresh ? [] : await LoadResolvedKeysAsync(ct);
 
                 for (var page = 1; page <= pages; page++)
                 {
@@ -132,6 +144,13 @@ namespace WebApplication1.Services
                     foreach (var tv in popular.Results)
                     {
                         log.RecordsProcessed++;
+
+                        // Já está no banco com providers: 0 créditos gastos.
+                        if (resolved.Contains((tv.Id, "Series")))
+                        {
+                            skipped++;
+                            continue;
+                        }
 
                         try
                         {
@@ -148,6 +167,7 @@ namespace WebApplication1.Services
                             if (created) log.RecordsCreated++; else log.RecordsUpdated++;
 
                             await UpsertProvidersAsync(title, allowedSources, ct);
+                            resolved.Add((tv.Id, "Series"));
                         }
                         catch (Exception itemEx)
                         {
@@ -176,8 +196,8 @@ namespace WebApplication1.Services
             {
                 log.FinishedAt = DateTime.UtcNow;
                 _logger.LogInformation(
-                    "Sync de séries: providers vistos nesta execução: {Providers}",
-                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)");
+                    "Sync de séries: providers vistos nesta execução: {Providers}. Pulados (já no banco): {Skipped}",
+                    seenProviders.Count > 0 ? string.Join(", ", seenProviders) : "(nenhum)", skipped);
                 _db.SyncLogs.Add(log);
                 await _db.SaveChangesAsync(ct);
             }
@@ -188,14 +208,17 @@ namespace WebApplication1.Services
         // =====================================================================
         // FLUXO 2 (recomendado para volume): parte do catálogo do Watchmode já
         // filtrado pelos seus streamings (AllowedSourceIds), depois busca os
-        // metadados completos no TMDB. Não desperdiça chamadas em títulos fora
-        // dos seus streamings, e cobre MUITO mais do catálogo real deles.
+        // metadados completos no TMDB.
+        // Títulos já resolvidos no banco são pulados ANTES de qualquer chamada
+        // ao Watchmode (/title/{id}/details) e ao TMDB.
         // =====================================================================
 
-        public async Task<SyncLog> SyncFromWatchmodeCatalogAsync(int maxPages = 10, int limitPerPage = 250, CancellationToken ct = default)
+        public async Task<SyncLog> SyncFromWatchmodeCatalogAsync(
+            int maxPages = 10, int limitPerPage = 250, CancellationToken ct = default, bool forceRefresh = false)
         {
             var log = new SyncLog { Source = "Watchmode+TMDB", SyncType = "Catalog", StartedAt = DateTime.UtcNow };
             var errors = 0;
+            var skipped = 0;
 
             try
             {
@@ -208,6 +231,7 @@ namespace WebApplication1.Services
 
                 var movieGenreMap = await _tmdb.GetMovieGenreMapAsync(ct);
                 var tvGenreMap = await _tmdb.GetTvGenreMapAsync(ct);
+                var resolved = forceRefresh ? [] : await LoadResolvedKeysAsync(ct);
 
                 for (var page = 1; page <= maxPages; page++)
                 {
@@ -227,6 +251,14 @@ namespace WebApplication1.Services
                         }
 
                         var isMovie = string.Equals(item.TmdbType, "movie", StringComparison.OrdinalIgnoreCase);
+                        var typeName = isMovie ? "Movie" : "Series";
+
+                        // Já está no banco com providers: pula Watchmode + TMDB (0 créditos).
+                        if (resolved.Contains((item.TmdbId.Value, typeName)))
+                        {
+                            skipped++;
+                            continue;
+                        }
 
                         try
                         {
@@ -262,6 +294,7 @@ namespace WebApplication1.Services
                             if (created) log.RecordsCreated++; else log.RecordsUpdated++;
 
                             await UpsertProvidersAsync(title, allowedSources, ct);
+                            resolved.Add((item.TmdbId.Value, typeName));
                         }
                         catch (Exception itemEx)
                         {
@@ -292,6 +325,7 @@ namespace WebApplication1.Services
             finally
             {
                 log.FinishedAt = DateTime.UtcNow;
+                _logger.LogInformation("Sync de catálogo: pulados (já no banco): {Skipped}", skipped);
                 _db.SyncLogs.Add(log);
                 await _db.SaveChangesAsync(ct);
             }
@@ -302,6 +336,23 @@ namespace WebApplication1.Services
         // =====================================================================
         // Helpers compartilhados pelos dois fluxos
         // =====================================================================
+
+        /// <summary>
+        /// Carrega UMA vez o conjunto (TmdbId, Type) dos títulos já "resolvidos" no banco:
+        /// existem e têm pelo menos um TitleProvider. Títulos sem provider (ex.: salvos pela
+        /// metade quando os créditos acabaram) NÃO entram, então são retentados.
+        /// A chave é composta porque o TMDB reutiliza IDs entre filmes e séries.
+        /// </summary>
+        private async Task<HashSet<(int TmdbId, string Type)>> LoadResolvedKeysAsync(CancellationToken ct)
+        {
+            var rows = await _db.Titles
+                .AsNoTracking()
+                .Where(t => t.TmdbId != null && t.Providers.Any())
+                .Select(t => new { TmdbId = t.TmdbId!.Value, t.Type })
+                .ToListAsync(ct);
+
+            return rows.Select(r => (r.TmdbId, r.Type)).ToHashSet();
+        }
 
         /// <summary>
         /// O TMDB devolve datas simples ("2021-05-10", sem timezone). O Npgsql exige que todo
