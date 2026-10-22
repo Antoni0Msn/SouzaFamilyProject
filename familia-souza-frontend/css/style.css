@@ -78,6 +78,29 @@ button { border: 0; cursor: pointer; }
 .secondary-button { color: white; background: rgba(255,255,255,.14); }
 .secondary-button:hover { background: rgba(255,255,255,.22); }
 .full { width: 100%; }
+/* Loading no botão */
+.primary-button { position: relative; }
+.primary-button:disabled { cursor: not-allowed; opacity: .85; transform: none; }
+.primary-button:disabled:hover { background: var(--accent); transform: none; }
+
+.primary-button.is-loading {
+  color: transparent; /* esconde o texto mantendo a largura do botão */
+  pointer-events: none;
+}
+.primary-button.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid rgba(255, 255, 255, .35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin .7s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
 .login-options { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: .77rem; color: #aaa; }
 .login-options a:hover { color: white; text-decoration: underline; }
 .checkbox-label { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
